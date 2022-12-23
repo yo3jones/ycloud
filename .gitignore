@@ -12,6 +12,7 @@
 *.out
 build
 compile_commands.json
+.env
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
