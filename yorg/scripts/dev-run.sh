@@ -2,4 +2,8 @@
 
 set -o allexport; source .env; set +o allexport
 
-echo $FOO
+cmake --build build --target yorg \
+  && echo  \
+  && echo "=====================" \
+  && echo  \
+  && ./build/yorg
