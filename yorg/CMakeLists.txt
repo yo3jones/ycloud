@@ -9,13 +9,13 @@ if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
 endif()
 
 include(FetchContent)
+
+# Google Test
 FetchContent_Declare(
   googletest
   URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
 )
-
 FetchContent_MakeAvailable(googletest)
-
 enable_testing()
 
 # add_executable(
@@ -30,4 +30,13 @@ enable_testing()
 # include(GoogleTest)
 # gtest_discover_tests(tutorial_test)
 
-# add_executable(tutorial main.cpp)
+FetchContent_Declare(
+  libpqxx
+  GIT_REPOSITORY https://github.com/jtv/libpqxx.git
+  GIT_TAG a6b1d60e74c1427c8ac2324b85cd4a0dc2068332
+)
+set(PQXX_LIBRARIES pqxx_static)
+FetchContent_MakeAvailable(libpqxx)
+
+add_executable(yorg src/main.cpp)
+target_link_libraries(yorg "${PQXX_LIBRARIES}")
