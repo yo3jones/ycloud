@@ -3,10 +3,11 @@
 #include <string>
 #include "./reference-driver.h"
 
-using driver_ydb::ReferenceDriver;
 using std::string;
+using ydb::driver::ReferenceDriver;
 
-namespace driver_ydb {
+namespace ydb {
+namespace driver {
 
 class RowDriver {
  public:
@@ -16,6 +17,7 @@ class RowDriver {
   virtual ReferenceDriver* at(const string& column) = 0;
 };
 
-}  // namespace driver_ydb
+}  // namespace driver
+}  // namespace ydb
 
 #endif  // !YDB_INCLUDE_DRIVER_ROW_DRIVER_H_

@@ -1,9 +1,6 @@
 #include "../include/result.h"
-#include "../include/driver/result-driver.h"
-#include "../include/row.h"
 
-using ydb::Result;
-using ydb::Row;
+namespace ydb {
 
 Result::Result(ResultDriver* resultDriver) : resultDriver(resultDriver) {}
 
@@ -18,3 +15,5 @@ Row Result::operator[](int i) {
 Row Result::at(int i) {
   return Row(resultDriver->at(i));
 }
+
+}  // namespace ydb

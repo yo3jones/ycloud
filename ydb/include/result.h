@@ -4,10 +4,11 @@
 #include "./driver/result-driver.h"
 #include "./row.h"
 
-using driver_ydb::ResultDriver;
 using std::shared_ptr;
 
 namespace ydb {
+
+using driver::ResultDriver;
 
 class Result {
  public:

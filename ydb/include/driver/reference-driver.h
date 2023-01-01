@@ -4,7 +4,8 @@
 
 using std::string;
 
-namespace driver_ydb {
+namespace ydb {
+namespace driver {
 
 class ReferenceDriver {
  public:
@@ -15,6 +16,7 @@ class ReferenceDriver {
   virtual int    asInt()    = 0;
 };
 
-}  // namespace driver_ydb
+}  // namespace driver
+}  // namespace ydb
 
 #endif  // !YDB_INCLUDE_DRIVER_REFERENCE_DRIVER_H_

@@ -4,10 +4,9 @@
 #include "../row-driver.h"
 #include "pqxx/pqxx"
 
-using driver_ydb::ResultDriver;
-using driver_ydb::RowDriver;
-
-namespace postgresql_ydb {
+namespace ydb {
+namespace driver {
+namespace postgresql {
 
 class PostgresqlResultDriver : public ResultDriver {
  public:
@@ -20,6 +19,8 @@ class PostgresqlResultDriver : public ResultDriver {
   pqxx::result backingResult;
 };
 
-}  // namespace postgresql_ydb
+}  // namespace postgresql
+}  // namespace driver
+}  // namespace ydb
 
 #endif  // !YDB_INCLUDE_DRIVER_POSTGRESQL_POSTGRESQL_RESULT_DRIVER_H_

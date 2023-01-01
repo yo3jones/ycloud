@@ -1,8 +1,6 @@
 #include "../include/connection-info-builder.h"
-#include "../include/connection-info.h"
 
-using ydb::ConnectionInfo;
-using ydb::ConnectionInfoBuilder;
+namespace ydb {
 
 ConnectionInfoBuilder::ConnectionInfoBuilder()
     : _type{Type::none},
@@ -53,3 +51,5 @@ ConnectionInfoBuilder& ConnectionInfoBuilder::database(string database) {
 ConnectionInfo ConnectionInfoBuilder::build() const {
   return ConnectionInfo(_type, _host, _port, _user, _password, _database);
 }
+
+}  // namespace ydb

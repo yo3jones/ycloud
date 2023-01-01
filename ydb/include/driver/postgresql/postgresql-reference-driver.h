@@ -4,10 +4,11 @@
 #include "../reference-driver.h"
 #include "pqxx/pqxx"
 
-using driver_ydb::ReferenceDriver;
 using std::string;
 
-namespace postgresql_ydb {
+namespace ydb {
+namespace driver {
+namespace postgresql {
 
 class PostgresqlReferenceDriver : public ReferenceDriver {
  public:
@@ -21,6 +22,8 @@ class PostgresqlReferenceDriver : public ReferenceDriver {
   pqxx::row::reference backingReference;
 };
 
-}  // namespace postgresql_ydb
+}  // namespace postgresql
+}  // namespace driver
+}  // namespace ydb
 
 #endif  // !YDB_INCLUDE_DRIVER_POSTGRESQL_POSTGRESQL_REFERENCE_DRIVER_H_

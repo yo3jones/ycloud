@@ -8,12 +8,11 @@
 #include "../driver.h"
 #include "pqxx/pqxx"
 
-using driver_ydb::Driver;
-using driver_ydb::ResultDriver;
 using std::shared_ptr;
-using ydb::ConnectionInfo;
 
-namespace postgresql_ydb {
+namespace ydb {
+namespace driver {
+namespace postgresql {
 
 class PostgresqlDriver : public Driver {
  public:
@@ -30,6 +29,8 @@ class PostgresqlDriver : public Driver {
   static string buildConnectionString(const ConnectionInfo& connectionInfo);
 };
 
-}  // namespace postgresql_ydb
+}  // namespace postgresql
+}  // namespace driver
+}  // namespace ydb
 
 #endif  // !YDB_INCLUDE_DRIVER_POSTGRESQL_POSTGRESQL_DRIVER_H_

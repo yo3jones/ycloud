@@ -1,17 +1,11 @@
-#include <iostream>
-#include <memory>
-#include <string>
-
 #include "../../../include/driver/postgresql/postgresql-driver.h"
 #include "../../../include/driver/postgresql/postgresql-result-driver.h"
-#include "../../../include/driver/result-driver.h"
-#include "pqxx/pqxx"
 
-using driver_ydb::ResultDriver;
-using postgresql_ydb::PostgresqlDriver;
-using postgresql_ydb::PostgresqlResultDriver;
 using std::shared_ptr;
-using ydb::ConnectionInfo;
+
+namespace ydb {
+namespace driver {
+namespace postgresql {
 
 string PostgresqlDriver::buildConnectionString(
     const ConnectionInfo& connectionInfo) {
@@ -38,3 +32,7 @@ ResultDriver* PostgresqlDriver::exec(const string& query) {
 
   return new PostgresqlResultDriver(backingResult);
 }
+
+}  // namespace postgresql
+}  // namespace driver
+}  // namespace ydb

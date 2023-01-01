@@ -2,9 +2,8 @@
 #define YDB_INCLUDE_DIRVER_RESULT_DRIVER_H_
 #include "./row-driver.h"
 
-using driver_ydb::RowDriver;
-
-namespace driver_ydb {
+namespace ydb {
+namespace driver {
 
 class ResultDriver {
  public:
@@ -14,6 +13,7 @@ class ResultDriver {
   virtual RowDriver* at(int i)     = 0;
 };
 
-}  // namespace driver_ydb
+}  // namespace driver
+}  // namespace ydb
 
 #endif  // !YDB_INCLUDE_DIRVER_RESULT_DRIVER_H_

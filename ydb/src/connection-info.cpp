@@ -1,7 +1,6 @@
 #include "../include/connection-info.h"
 
-using ydb::ConnectionInfo;
-using ydb::Type;
+namespace ydb {
 
 ConnectionInfo::ConnectionInfo(Type   type,
                                string host,
@@ -40,3 +39,5 @@ string ConnectionInfo::getPassword() const {
 string ConnectionInfo::getDatabase() const {
   return this->database;
 }
+
+}  // namespace ydb

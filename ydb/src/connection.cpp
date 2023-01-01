@@ -1,14 +1,6 @@
-#include <memory>
-#include <string>
-
 #include "../include/connection.h"
-#include "../include/driver/driver.h"
-#include "../include/result.h"
 
-using driver_ydb::Driver;
-using std::shared_ptr;
-using ydb::Connection;
-using ydb::Result;
+namespace ydb {
 
 Connection::Connection() {}
 
@@ -25,3 +17,5 @@ void Connection::disconnect() {
 Result Connection::exec(const std::string& query) {
   return Result(driver->exec(query));
 }
+
+}  // namespace ydb

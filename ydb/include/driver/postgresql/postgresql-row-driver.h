@@ -3,11 +3,11 @@
 #include "../row-driver.h"
 #include "pqxx/pqxx"
 
-using driver_ydb::ReferenceDriver;
-using driver_ydb::RowDriver;
 using std::string;
 
-namespace postgresql_ydb {
+namespace ydb {
+namespace driver {
+namespace postgresql {
 
 class PostgresqlRowDriver : public RowDriver {
  public:
@@ -20,4 +20,6 @@ class PostgresqlRowDriver : public RowDriver {
   pqxx::row backingRow;
 };
 
-}  // namespace postgresql_ydb
+}  // namespace postgresql
+}  // namespace driver
+}  // namespace ydb

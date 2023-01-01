@@ -7,12 +7,13 @@
 #include "driver/driver-factory.h"
 #include "driver/driver.h"
 
-using driver_ydb::DriverFactory;
 using std::shared_ptr;
 using std::string;
-using ydb::Result;
 
 namespace ydb {
+
+using driver::Driver;
+using driver::DriverFactory;
 
 class Connection {
  public:

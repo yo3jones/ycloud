@@ -1,11 +1,8 @@
-#include <string>
-
-#include "../include/driver/reference-driver.h"
 #include "../include/reference.h"
 
-using driver_ydb::ReferenceDriver;
-using std::string;
-using ydb::Reference;
+namespace ydb {
+
+using driver::ReferenceDriver;
 
 Reference::Reference(ReferenceDriver* referenceDriver)
     : referenceDriver(referenceDriver) {}
@@ -21,3 +18,5 @@ string Reference::asString() {
 int Reference::asInt() {
   return referenceDriver->asInt();
 }
+
+}  // namespace ydb
