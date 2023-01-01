@@ -1,9 +1,11 @@
-#! /bin/bash
+#!/bin/bash
 
-set -o allexport; source .env; set +o allexport
+set -o allexport; source .env; set +o allexport; set -e
 
-cmake --build build --target yorg \
-  && echo  \
-  && echo "=====================" \
-  && echo  \
-  && ./build/yorg
+cmake --build out/build --target yorg
+
+echo
+echo "====================="
+echo
+
+./out/build/yorg
