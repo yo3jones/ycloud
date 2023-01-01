@@ -18,25 +18,34 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 enable_testing()
 
+# FetchContent_Declare(
+#   libpqxx
+#   GIT_REPOSITORY https://github.com/jtv/libpqxx.git
+#   GIT_TAG a6b1d60e74c1427c8ac2324b85cd4a0dc2068332
+# )
+# set(PQXX_LIBRARIES pqxx_static)
+# FetchContent_MakeAvailable(libpqxx)
+
 # add_executable(
-#   tutorial_test
-#   tutorial_test.cpp
+#   yorg_test
+#   src/db/db-connection-info.cpp
+#   test/db/db-connection-info_test.cpp
 # )
 # target_link_libraries(
-#   tutorial_test
+#   yorg_test
 #   GTest::gtest_main
 # )
-
+#
 # include(GoogleTest)
-# gtest_discover_tests(tutorial_test)
+# gtest_discover_tests(yorg_test)
 
-FetchContent_Declare(
-  libpqxx
-  GIT_REPOSITORY https://github.com/jtv/libpqxx.git
-  GIT_TAG a6b1d60e74c1427c8ac2324b85cd4a0dc2068332
+add_executable(yorg
+  src/main.cpp
 )
-set(PQXX_LIBRARIES pqxx_static)
-FetchContent_MakeAvailable(libpqxx)
+# target_link_libraries(yorg "${PQXX_LIBRARIES}")
 
-add_executable(yorg src/main.cpp)
-target_link_libraries(yorg "${PQXX_LIBRARIES}")
+add_subdirectory(out/deps/ydb)
+target_include_directories(yorg PUBLIC out/deps/ydb/include)
+target_link_libraries(yorg
+  ydb
+)
