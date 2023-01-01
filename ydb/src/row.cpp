@@ -1,10 +1,6 @@
 #include "../include/row.h"
-#include "../include/driver/row-driver.h"
-#include "../include/reference.h"
 
-using driver_ydb::RowDriver;
-using ydb::Reference;
-using ydb::Row;
+namespace ydb {
 
 Row::Row(RowDriver* rowDriver) : rowDriver(rowDriver) {}
 
@@ -23,3 +19,5 @@ Reference Row::operator[](int i) {
 Reference Row::operator[](const string& column) {
   return at(column);
 }
+
+}  // namespace ydb

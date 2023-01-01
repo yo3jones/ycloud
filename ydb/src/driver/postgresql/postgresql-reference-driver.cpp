@@ -1,9 +1,8 @@
-#include <string>
-
 #include "../../../include/driver/postgresql/postgresql-reference-driver.h"
 
-using postgresql_ydb::PostgresqlReferenceDriver;
-using std::string;
+namespace ydb {
+namespace driver {
+namespace postgresql {
 
 PostgresqlReferenceDriver::PostgresqlReferenceDriver(
     pqxx::row::reference backingReference)
@@ -20,3 +19,7 @@ string PostgresqlReferenceDriver::asString() {
 int PostgresqlReferenceDriver::asInt() {
   return backingReference.as<int>();
 }
+
+}  // namespace postgresql
+}  // namespace driver
+}  // namespace ydb

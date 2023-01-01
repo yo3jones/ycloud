@@ -4,11 +4,12 @@
 #include <string>
 #include "./driver/reference-driver.h"
 
-using driver_ydb::ReferenceDriver;
 using std::shared_ptr;
 using std::string;
 
 namespace ydb {
+
+using driver::ReferenceDriver;
 
 class Reference {
  public:

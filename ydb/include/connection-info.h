@@ -1,6 +1,5 @@
 #ifndef YDB_SRC_CONNECTION_INFO_H_
 #define YDB_SRC_CONNECTION_INFO_H_
-
 #include <string>
 
 using std::string;

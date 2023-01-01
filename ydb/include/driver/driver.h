@@ -4,11 +4,11 @@
 #include "../connection-info.h"
 #include "./result-driver.h"
 
-using driver_ydb::ResultDriver;
 using std::string;
 using ydb::ConnectionInfo;
 
-namespace driver_ydb {
+namespace ydb {
+namespace driver {
 
 class Driver {
  public:
@@ -20,6 +20,7 @@ class Driver {
   virtual ResultDriver* exec(const string& query) = 0;
 };
 
-}  // namespace driver_ydb
+}  // namespace driver
+}  // namespace ydb
 
 #endif  // !YDB_INCLUDE_DRIVER_DRIVER_H_

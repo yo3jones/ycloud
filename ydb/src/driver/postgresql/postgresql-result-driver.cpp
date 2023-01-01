@@ -2,11 +2,10 @@
 
 #include "../../../include/driver/postgresql/postgresql-result-driver.h"
 #include "../../../include/driver/postgresql/postgresql-row-driver.h"
-#include "../../../include/driver/row-driver.h"
 
-using driver_ydb::RowDriver;
-using postgresql_ydb::PostgresqlResultDriver;
-using postgresql_ydb::PostgresqlRowDriver;
+namespace ydb {
+namespace driver {
+namespace postgresql {
 
 PostgresqlResultDriver::PostgresqlResultDriver(pqxx::result backingResult)
     : backingResult{backingResult} {}
@@ -18,3 +17,7 @@ int PostgresqlResultDriver::getRowCount() {
 RowDriver* PostgresqlResultDriver::at(int i) {
   return new PostgresqlRowDriver(backingResult.at(i));
 }
+
+}  // namespace postgresql
+}  // namespace driver
+}  // namespace ydb

@@ -3,15 +3,15 @@
 
 #include "./driver.h"
 
-using driver_ydb::Driver;
-
-namespace driver_ydb {
+namespace ydb {
+namespace driver {
 
 class DriverFactory {
  public:
   virtual Driver* create() const = 0;
 };
 
-}  // namespace driver_ydb
+}  // namespace driver
+}  // namespace ydb
 
 #endif  // !YDB_INCLUDE_DRIVER_DRIVER_FACTORY_H_

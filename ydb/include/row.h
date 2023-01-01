@@ -5,12 +5,12 @@
 #include "./driver/row-driver.h"
 #include "./reference.h"
 
-using driver_ydb::RowDriver;
 using std::shared_ptr;
 using std::string;
-using ydb::Reference;
 
 namespace ydb {
+
+using driver::RowDriver;
 
 class Row {
  public:
