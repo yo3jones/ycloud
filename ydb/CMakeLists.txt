@@ -21,35 +21,21 @@ enable_testing()
 FetchContent_Declare(
   libpqxx
   GIT_REPOSITORY https://github.com/jtv/libpqxx.git
-  GIT_TAG a6b1d60e74c1427c8ac2324b85cd4a0dc2068332
+  # 7.7.4
+  GIT_TAG 17e5a6c8ac3abc05329891aaa378bd6004b9c8ee
 )
-set(PQXX_LIBRARIES pqxx_static)
+set(PQXX_LIBRARIES pqxx)
 FetchContent_MakeAvailable(libpqxx)
 
-add_executable(
-  ydb_test
-
-  src/connection.cpp
+add_executable(ydb_test
   src/connection-info.cpp
   src/connection-info-builder.cpp
-  src/result.cpp
-  src/row.cpp
-  src/reference.cpp
-  src/transaction.cpp
-
-  src/driver/postgresql/postgresql-driver.cpp
-  src/driver/postgresql/postgresql-driver-factory.cpp
-  src/driver/postgresql/postgresql-result-driver.cpp
-  src/driver/postgresql/postgresql-row-driver.cpp
-  src/driver/postgresql/postgresql-reference-driver.cpp
-  src/driver/postgresql/postgresql-transaction-driver.cpp
 
   test/postgresql-test-environment.cpp
   test/test-setup.cpp
 
   test/connection-info_test.cpp
   test/connection-info-builder_test.cpp
-  test/postgresql_test.cpp
 )
 target_link_libraries(
   ydb_test
@@ -61,19 +47,7 @@ include(GoogleTest)
 gtest_discover_tests(ydb_test)
 
 add_library(ydb
-  src/connection.cpp
   src/connection-info.cpp
   src/connection-info-builder.cpp
-  src/result.cpp
-  src/row.cpp
-  src/reference.cpp
-  src/transaction.cpp
-
-  src/driver/postgresql/postgresql-driver.cpp
-  src/driver/postgresql/postgresql-driver-factory.cpp
-  src/driver/postgresql/postgresql-result-driver.cpp
-  src/driver/postgresql/postgresql-row-driver.cpp
-  src/driver/postgresql/postgresql-reference-driver.cpp
-  src/driver/postgresql/postgresql-transaction-driver.cpp
 )
 target_link_libraries(ydb "${PQXX_LIBRARIES}")

@@ -10,12 +10,14 @@ enum Type { none, postgresql };
 
 class ConnectionInfo {
  public:
+  ConnectionInfo();
   ConnectionInfo(Type   type,
                  string host,
                  string port,
                  string user,
                  string password,
                  string database);
+  ConnectionInfo(const ConnectionInfo& connInfo);
 
   Type getType() const;
 
@@ -28,6 +30,8 @@ class ConnectionInfo {
   string getPassword() const;
 
   string getDatabase() const;
+
+  string toURI() const;
 
  private:
   Type   type;

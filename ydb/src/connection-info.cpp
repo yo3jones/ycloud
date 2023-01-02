@@ -2,19 +2,34 @@
 
 namespace ydb {
 
+ConnectionInfo::ConnectionInfo()
+    : type(Type::none),
+      host(""),
+      port(""),
+      user(""),
+      password(""),
+      database("") {}
+
 ConnectionInfo::ConnectionInfo(Type   type,
                                string host,
                                string port,
                                string user,
                                string password,
-                               string database) {
-  this->type     = type;
-  this->host     = host;
-  this->port     = port;
-  this->user     = user;
-  this->password = password;
-  this->database = database;
-}
+                               string database)
+    : type(type),
+      host(host),
+      port(port),
+      user(user),
+      password(password),
+      database(database) {}
+
+ConnectionInfo::ConnectionInfo(const ConnectionInfo& connInfo)
+    : type(connInfo.type),
+      host(connInfo.host),
+      port(connInfo.port),
+      user(connInfo.user),
+      password(connInfo.password),
+      database(connInfo.database) {}
 
 Type ConnectionInfo::getType() const {
   return type;
@@ -38,6 +53,11 @@ string ConnectionInfo::getPassword() const {
 
 string ConnectionInfo::getDatabase() const {
   return this->database;
+}
+
+string ConnectionInfo::toURI() const {
+  return "postgresql://" + user + ":" + password + "@" + host + ":" + port +
+         "/" + database;
 }
 
 }  // namespace ydb
