@@ -1,15 +1,9 @@
 #include "../include/connection-info-builder.h"
-#include "../include/connection-info.h"
-#include "../include/connection.h"
-#include "../include/driver/postgresql/postgresql-driver-factory.h"
 #include "./include/postgresql-test-enviornment.h"
-#include "gtest/gtest.h"
 
 using std::getenv;
-using ydb::Connection;
 using ydb::ConnectionInfo;
 using ydb::ConnectionInfoBuilder;
-using ydb::PostgresqlDriverFactory;
 using ydb::Type;
 
 ConnectionInfo PostgresqlTestEnvironment::defaultConnInfo =
@@ -41,33 +35,40 @@ void PostgresqlTestEnvironment::TearDown() {
   cleanupTestDatabase(defaultConnInfo, connInfo.getDatabase());
 }
 
-Connection* PostgresqlTestEnvironment::createConnection(
+pqxx::connection* PostgresqlTestEnvironment::createConnection(
     ConnectionInfo connInfo) {
-  return new Connection(PostgresqlDriverFactory(), connInfo);
+  return new pqxx::connection(connInfo.toURI());
 }
 
-Connection* PostgresqlTestEnvironment::createConnection() {
+pqxx::connection* PostgresqlTestEnvironment::createConnection() {
   return createConnection(connInfo);
 }
 
-void PostgresqlTestEnvironment::cleanupTestDatabase(Connection*   conn,
+void PostgresqlTestEnvironment::cleanupTestDatabase(pqxx::connection* conn,
                                                     const string& database) {
-  conn->execNoTransaction("DROP DATABASE IF EXISTS " + database);
+  auto txn = new pqxx::nontransaction(*conn);
+  txn->exec("DROP DATABASE IF EXISTS " + database);
+  delete txn;
 }
 
 void PostgresqlTestEnvironment::cleanupTestDatabase(ConnectionInfo connInfo,
                                                     const string&  database) {
   auto connection = createConnection(connInfo);
   cleanupTestDatabase(connection, database);
-  connection->disconnect();
+  connection->close();
   delete connection;
 }
 
 void PostgresqlTestEnvironment::initTestDatabase(ConnectionInfo connInfo,
                                                  const string&  database) {
-  auto connection = createConnection(connInfo);
-  cleanupTestDatabase(connection, database);
-  connection->execNoTransaction("CREATE DATABASE " + database);
-  connection->disconnect();
-  delete connection;
+  auto conn = createConnection(connInfo);
+
+  cleanupTestDatabase(conn, database);
+
+  auto txn = new pqxx::nontransaction(*conn);
+  txn->exec("CREATE DATABASE " + database);
+  delete txn;
+
+  conn->close();
+  delete conn;
 }

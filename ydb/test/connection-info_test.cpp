@@ -33,3 +33,8 @@ TEST_F(ConnectionInfoTest, getPassword) {
 TEST_F(ConnectionInfoTest, getDatabase) {
   EXPECT_EQ(connInfo.getDatabase(), "someDatabase");
 }
+
+TEST_F(ConnectionInfoTest, toURI) {
+  EXPECT_EQ(connInfo.toURI(),
+            "postgresql://someUser:somePassword@someHost:1234/someDatabase");
+}
