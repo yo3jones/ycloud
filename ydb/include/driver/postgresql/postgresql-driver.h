@@ -23,6 +23,11 @@ class PostgresqlDriver : public Driver {
 
   ResultDriver* exec(const string& query);
 
+  TransactionDriver* createTransaction();
+  ResultDriver* exec(TransactionDriver* transactionDriver, const string& query);
+
+  ResultDriver* execNoTransaction(const string& query);
+
  private:
   shared_ptr<pqxx::connection> backingConnection;
 

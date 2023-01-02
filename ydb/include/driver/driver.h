@@ -3,6 +3,7 @@
 #include <string>
 #include "../connection-info.h"
 #include "./result-driver.h"
+#include "./transaction-driver.h"
 
 using std::string;
 using ydb::ConnectionInfo;
@@ -18,6 +19,12 @@ class Driver {
   virtual void disconnect()                                  = 0;
 
   virtual ResultDriver* exec(const string& query) = 0;
+
+  virtual TransactionDriver* createTransaction()       = 0;
+  virtual ResultDriver*      exec(TransactionDriver* transactionDriver,
+                                  const string&      query) = 0;
+
+  virtual ResultDriver* execNoTransaction(const string& query) = 0;
 };
 
 }  // namespace driver

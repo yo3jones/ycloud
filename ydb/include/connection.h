@@ -4,8 +4,10 @@
 #include <string>
 #include "./connection-info.h"
 #include "./result.h"
+#include "./transaction.h"
 #include "driver/driver-factory.h"
 #include "driver/driver.h"
+#include "driver/transaction-driver.h"
 
 using std::shared_ptr;
 using std::string;
@@ -23,6 +25,11 @@ class Connection {
 
   void   disconnect();
   Result exec(const string& query);
+
+  Transaction createTransaction();
+  Result      exec(Transaction transaction, const string& query);
+
+  Result execNoTransaction(const string& query);
 
  private:
   shared_ptr<Driver> driver;
