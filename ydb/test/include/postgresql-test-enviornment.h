@@ -16,14 +16,17 @@ class PostgresqlTestEnvironment : public ::testing::Environment {
   void SetUp() override;
   void TearDown() override;
 
-  static Connection* conn;
-  ConnectionInfo     defaultConnInfo;
-  ConnectionInfo     connInfo;
+  static Connection* createConnection();
+  static Connection* createConnection(ConnectionInfo connInfo);
+
+  static ConnectionInfo defaultConnInfo;
+  static ConnectionInfo connInfo;
 
  private:
-  void cleanupTestDatabase(Connection* conn, const string& database);
-  void cleanupTestDatabase(ConnectionInfo connInfo, const string& database);
-  void initTestDatabase(ConnectionInfo connInfo, const string& database);
+  static void cleanupTestDatabase(Connection* conn, const string& database);
+  static void cleanupTestDatabase(ConnectionInfo connInfo,
+                                  const string&  database);
+  static void initTestDatabase(ConnectionInfo connInfo, const string& database);
 };
 
 #endif  // YDB_TEST_INCLUDE_POSTGRESQL_TEST_ENVIORNMENT_H_

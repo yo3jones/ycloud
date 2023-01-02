@@ -35,12 +35,14 @@ add_executable(
   src/result.cpp
   src/row.cpp
   src/reference.cpp
+  src/transaction.cpp
 
   src/driver/postgresql/postgresql-driver.cpp
   src/driver/postgresql/postgresql-driver-factory.cpp
   src/driver/postgresql/postgresql-result-driver.cpp
   src/driver/postgresql/postgresql-row-driver.cpp
   src/driver/postgresql/postgresql-reference-driver.cpp
+  src/driver/postgresql/postgresql-transaction-driver.cpp
 
   test/postgresql-test-environment.cpp
   test/test-setup.cpp
@@ -65,11 +67,13 @@ add_library(ydb
   src/result.cpp
   src/row.cpp
   src/reference.cpp
+  src/transaction.cpp
 
   src/driver/postgresql/postgresql-driver.cpp
   src/driver/postgresql/postgresql-driver-factory.cpp
   src/driver/postgresql/postgresql-result-driver.cpp
   src/driver/postgresql/postgresql-row-driver.cpp
   src/driver/postgresql/postgresql-reference-driver.cpp
+  src/driver/postgresql/postgresql-transaction-driver.cpp
 )
 target_link_libraries(ydb "${PQXX_LIBRARIES}")
