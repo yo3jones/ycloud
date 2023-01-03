@@ -1,5 +1,5 @@
-#include "../include/connection-info-builder.h"
-#include "./include/postgresql-test-enviornment.h"
+#include "../src/connection-info-builder.h"
+#include "./postgresql-test-enviornment.h"
 
 using std::getenv;
 using ydb::ConnectionInfo;
