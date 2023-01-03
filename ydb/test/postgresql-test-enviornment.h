@@ -1,6 +1,6 @@
 #ifndef YDB_TEST_INCLUDE_POSTGRESQL_TEST_ENVIORNMENT_H_
 #define YDB_TEST_INCLUDE_POSTGRESQL_TEST_ENVIORNMENT_H_
-#include "../../include/connection-info.h"
+#include "../src/connection-info.h"
 #include "gtest/gtest.h"
 #include "pqxx/pqxx"
 #include "string"

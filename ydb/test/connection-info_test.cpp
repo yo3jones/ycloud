@@ -1,4 +1,4 @@
-#include "../include/connection-info.h"
+#include "../src/connection-info.h"
 #include "gtest/gtest.h"
 
 using ydb::ConnectionInfo;

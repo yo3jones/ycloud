@@ -30,12 +30,15 @@ FetchContent_MakeAvailable(libpqxx)
 add_executable(ydb_test
   src/connection-info.cpp
   src/connection-info-builder.cpp
+  src/migration.cpp
+  src/migrations-runner.cpp
 
   test/postgresql-test-environment.cpp
   test/test-setup.cpp
 
   test/connection-info_test.cpp
   test/connection-info-builder_test.cpp
+  test/migrations_test.cpp
 )
 target_link_libraries(
   ydb_test
@@ -49,5 +52,7 @@ gtest_discover_tests(ydb_test)
 add_library(ydb
   src/connection-info.cpp
   src/connection-info-builder.cpp
+  src/migration.cpp
+  src/migrations-runner.cpp
 )
 target_link_libraries(ydb "${PQXX_LIBRARIES}")
