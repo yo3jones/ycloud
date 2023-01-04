@@ -43,11 +43,10 @@ class MigrationsRunner {
 
   static bool compareMigrations(Migration* a, Migration* b);
 
-  void    initMigrationsTable();
-  void    runMigration(Migration* migration);
-  bool    startMigration(Migration* migration);
-  RunMode shouldRunMigration(Migration* migration, pqxx::work& txn);  // NOLINT
-  void    completeMigration(Migration* migration, const string& status);
+  void initMigrationsTable();
+  void runMigration(Migration* migration);
+  bool startMigration(Migration* migration);
+  void completeMigration(Migration* migration, const string& status);
 };
 
 }  // namespace ydb

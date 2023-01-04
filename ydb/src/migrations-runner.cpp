@@ -72,50 +72,31 @@ void MigrationsRunner::runMigration(Migration* migration) {
 bool MigrationsRunner::startMigration(Migration* migration) {
   pqxx::work txn{conn};
 
-  RunMode runMode = shouldRunMigration(migration, txn);
+  pqxx::result res = txn.exec_params("UPDATE " + opts._migrationTableName +
+                                         " SET status=$1,"
+                                         "     updated_at=current_timestamp"
+                                         " WHERE name=$2"
+                                         " AND status=$3",
+                                     RUNNING, migration->name(), ERROR);
 
-  if (runMode == RunMode::skip) {
-    return false;
-  }
-
-  if (runMode == RunMode::insert) {
-    txn.exec_params("INSERT INTO " + opts._migrationTableName +
-                        " "
-                        "(name, status) VALUES ($1, $2)",
-                    migration->name(), RUNNING);
-  } else {
-    txn.exec_params("UPDATE " + opts._migrationTableName +
-                        " "
-                        "SET status=$2, "
-                        "    updated_at=current_timestamp "
-                        "WHERE name=$1 ",
-                    migration->name(), RUNNING);
+  if (res.affected_rows() > 0) {
+    txn.commit();
+    return true;
   }
 
   try {
-    txn.commit();
+    txn.exec_params("INSERT INTO " + opts._migrationTableName +
+                        " (name, status) "
+                        " VALUES ($1, $2)",
+                    migration->name(), RUNNING);
   } catch (...) {
-    // this means another process is running the migration
+    txn.commit();
     return false;
   }
 
+  txn.commit();
+
   return true;
-}
-
-MigrationsRunner::RunMode MigrationsRunner::shouldRunMigration(
-    Migration*  migration,
-    pqxx::work& txn) {
-  pqxx::result res = txn.exec_params(
-      "SELECT status FROM " + opts._migrationTableName + " WHERE name=$1",
-      migration->name());
-
-  if (res.empty()) {
-    return RunMode::insert;
-  }
-
-  string status = res[0]["status"].c_str();
-
-  return status == ERROR ? RunMode::update : RunMode::skip;
 }
 
 void MigrationsRunner::completeMigration(Migration*    migration,
