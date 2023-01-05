@@ -27,9 +27,15 @@ FetchContent_Declare(
 set(PQXX_LIBRARIES pqxx)
 FetchContent_MakeAvailable(libpqxx)
 
+add_subdirectory(
+  ../yutil
+  ${CMAKE_CURRENT_BINARY_DIR}/yutil
+)
+
 add_executable(ydb_test
   src/connection-info.cpp
   src/connection-info-builder.cpp
+  src/connection-pool.cpp
   src/migration.cpp
   src/migrations-runner.cpp
 
@@ -39,12 +45,14 @@ add_executable(ydb_test
   test/connection-info_test.cpp
   test/connection-info-builder_test.cpp
   test/migrations_test.cpp
+  test/connection-pool_test.cpp
 )
 target_link_libraries(
   ydb_test
   # GTest::gtest_main
   GTest::gtest
   "${PQXX_LIBRARIES}"
+  yutil
 )
 include(GoogleTest)
 gtest_discover_tests(ydb_test)
@@ -52,7 +60,14 @@ gtest_discover_tests(ydb_test)
 add_library(ydb
   src/connection-info.cpp
   src/connection-info-builder.cpp
+  src/connection-pool.cpp
   src/migration.cpp
   src/migrations-runner.cpp
 )
-target_link_libraries(ydb "${PQXX_LIBRARIES}")
+target_include_directories(ydb
+  PUBLIC include
+)
+target_link_libraries(ydb
+  "${PQXX_LIBRARIES}"
+  yutil
+)

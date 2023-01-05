@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(ydb)
+project(yutil)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS true)
 
@@ -34,4 +34,7 @@ gtest_discover_tests(yutil_test)
 add_library(yutil
   src/semaphore.cpp
   src/pool.h
+)
+target_include_directories(yutil
+  PUBLIC include
 )
