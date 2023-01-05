@@ -20,8 +20,10 @@ enable_testing()
 
 add_executable(yutil_test
   src/semaphore.cpp
+  src/pool.h
 
   test/semaphore_test.cpp
+  test/pool_test.cpp
 )
 target_link_libraries(yutil_test
   GTest::gtest_main
@@ -31,4 +33,5 @@ gtest_discover_tests(yutil_test)
 
 add_library(yutil
   src/semaphore.cpp
+  src/pool.h
 )
