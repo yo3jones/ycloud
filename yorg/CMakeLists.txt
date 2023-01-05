@@ -10,6 +10,15 @@ endif()
 
 include(FetchContent)
 
+FetchContent_Declare(
+  crow
+  URL https://github.com/CrowCpp/Crow/archive/refs/tags/v1.0+5.zip
+  # URL https://github.com/CrowCpp/Crow/releases/download/v1.0%2B5/crow-v1.0+5.tar.gz
+  # requires asio
+  # requires boost
+)
+FetchContent_MakeAvailable(crow)
+
 # Google Test
 FetchContent_Declare(
   googletest
@@ -17,14 +26,6 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 enable_testing()
-
-# FetchContent_Declare(
-#   libpqxx
-#   GIT_REPOSITORY https://github.com/jtv/libpqxx.git
-#   GIT_TAG a6b1d60e74c1427c8ac2324b85cd4a0dc2068332
-# )
-# set(PQXX_LIBRARIES pqxx_static)
-# FetchContent_MakeAvailable(libpqxx)
 
 # add_executable(
 #   yorg_test
@@ -41,7 +42,10 @@ enable_testing()
 
 add_executable(yorg
   src/main.cpp
+
+  src/controllers/hello-controller.cpp
 )
+target_link_libraries(yorg Crow::Crow)
 # target_link_libraries(yorg "${PQXX_LIBRARIES}")
 
 add_subdirectory(out/deps/ydb)
