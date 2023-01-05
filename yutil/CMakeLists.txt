@@ -17,3 +17,18 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 enable_testing()
+
+add_executable(yutil_test
+  src/semaphore.cpp
+
+  test/semaphore_test.cpp
+)
+target_link_libraries(yutil_test
+  GTest::gtest_main
+)
+include(GoogleTest)
+gtest_discover_tests(yutil_test)
+
+add_library(yutil
+  src/semaphore.cpp
+)
