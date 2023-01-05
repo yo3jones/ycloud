@@ -7,6 +7,9 @@ then
   cp example.env .env
 fi
 
+ln -f -s ../.clang-format .clang-format
+ln -f -s ../CPPLINT.cfg CPPLINT.cfg
+
 # make sure the dep dir is created
 mkdir -p out/deps
 

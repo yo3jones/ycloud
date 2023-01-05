@@ -1,24 +1,16 @@
-#include <ydb.h>
-#include <iostream>
-// #include <pqxx/pqxx>
-
-using ydb::ConnectionInfoBuilder;
+#include "controllers/hello-controller.h"
+#include "crow.h"
+#include "crow/app.h"
 
 int main() {
-  // pqxx::connection c{"postgresql://root:password@localhost/default"};
-  // pqxx::work txn{c};
-  // txn.commit();
-  // c.disconnect();
+  crow::SimpleApp  app;
+  HelloController  helloController;
+  HelloController* hc = &helloController;
 
-  auto connectionInfo = ConnectionInfoBuilder{}
-                            .host("localhost")
-                            .port("5432")
-                            .user("root")
-                            .password("password")
-                            .database("default")
-                            .build();
+  CROW_ROUTE(app, "/hello")
+  ([hc]() { return hc->get(); });
 
-  std::cout << connectionInfo.getHost() << std::endl;
+  app.port(8080).multithreaded().run();
 
   return 0;
 }
