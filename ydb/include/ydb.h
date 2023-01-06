@@ -3,3 +3,4 @@
 #include "../src/connection-pool.h"
 #include "../src/migration.h"
 #include "../src/migrations-runner.h"
+#include "../src/ydb.h"

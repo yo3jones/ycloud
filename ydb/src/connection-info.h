@@ -1,6 +1,7 @@
 #ifndef YDB_SRC_CONNECTION_INFO_H_
 #define YDB_SRC_CONNECTION_INFO_H_
 #include <string>
+#include "./yutil.h"
 
 using std::string;
 
@@ -10,6 +11,8 @@ enum Type { none, postgresql };
 
 class ConnectionInfo {
  public:
+  enum EnvType { MAIN, DEFAULT, TEST };
+
   ConnectionInfo();
   ConnectionInfo(Type   type,
                  string host,
@@ -18,6 +21,7 @@ class ConnectionInfo {
                  string password,
                  string database);
   ConnectionInfo(const ConnectionInfo& connInfo);
+  explicit ConnectionInfo(const yutil::Env& env, EnvType envType);
 
   Type getType() const;
 
@@ -40,6 +44,8 @@ class ConnectionInfo {
   string user;
   string password;
   string database;
+
+  static string getDatabaseForEnv(const yutil::Env& env, EnvType envType);
 };
 
 }  // namespace ydb

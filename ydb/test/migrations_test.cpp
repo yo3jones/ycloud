@@ -3,10 +3,13 @@
 #include "./include/ydb-test.h"
 #include "gtest/gtest.h"
 
+using ydb::testing::PostgresqlTestEnvironment;
+
 class MigrationsTest : public ::testing::Test {
  public:
   void SetUp() override {
-    connInfo = PostgresqlTestEnvironment::connInfo;
+    connInfo        = PostgresqlTestEnvironment::connInfo;
+    defaultConnInfo = PostgresqlTestEnvironment::connInfo;
     cleanupMigrationsTable();
   }
   void TearDown() override { cleanupMigrationsTable(); }
@@ -20,6 +23,7 @@ class MigrationsTest : public ::testing::Test {
   }
 
   ydb::ConnectionInfo connInfo;
+  ydb::ConnectionInfo defaultConnInfo;
 };
 
 class TestMigrationOne : public ydb::Migration {
@@ -51,7 +55,7 @@ class TestMigrationError : public ydb::Migration {
 
 TEST_F(MigrationsTest, createMigrationsTable) {
   ydb::MigrationsRunner(
-      connInfo,
+      connInfo, defaultConnInfo,
       ydb::MigrationsRunnerOptions().migrationTableName("test_migrations"))
       .run();
 
@@ -68,7 +72,7 @@ TEST_F(MigrationsTest, migrationStatus) {
   bool caught = false;
   try {
     ydb::MigrationsRunner(
-        connInfo,
+        connInfo, defaultConnInfo,
         ydb::MigrationsRunnerOptions().migrationTableName("test_migrations"))
         .registerMigration(new TestMigrationTwo())
         .registerMigration(new TestMigrationOne())
@@ -95,7 +99,7 @@ TEST_F(MigrationsTest, migrationStatus) {
 TEST_F(MigrationsTest, retry) {
   TestMigrationError*   errorMigration = new TestMigrationError();
   ydb::MigrationsRunner runner(
-      connInfo,
+      connInfo, defaultConnInfo,
       ydb::MigrationsRunnerOptions().migrationTableName("test_migrations"));
   runner.registerMigration(errorMigration);
 

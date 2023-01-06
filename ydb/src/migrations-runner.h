@@ -24,10 +24,12 @@ class MigrationsRunner {
  public:
   explicit MigrationsRunner(
       ConnectionInfo          connInfo,
+      ConnectionInfo          defaultConnInfo,
       MigrationsRunnerOptions opts = MigrationsRunnerOptions());
   ~MigrationsRunner();
 
   MigrationsRunner& registerMigration(Migration* migration);
+  MigrationsRunner& registerMigrations(Migration* migrations[], size_t size);
 
   void run();
 
@@ -37,7 +39,9 @@ class MigrationsRunner {
   const string COMPLETE = "complete";
   const string ERROR    = "error";
 
-  pqxx::connection        conn;
+  ConnectionInfo          connInfo;
+  ConnectionInfo          defaultConnInfo;
+  pqxx::connection*       conn;
   MigrationsRunnerOptions opts;
   std::vector<Migration*> migrations;
 

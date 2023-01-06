@@ -10,12 +10,6 @@ fi
 ln -f -s ../.clang-format .clang-format
 ln -f -s ../CPPLINT.cfg CPPLINT.cfg
 
-# make sure the dep dir is created
-mkdir -p out/deps
-
-# link the ydb dependency library
-ln -s -f ../../../ydb out/deps/ydb
-
 # initialize the cmake project
 cmake -S . -B out/build
 
