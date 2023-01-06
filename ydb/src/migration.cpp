@@ -2,6 +2,8 @@
 
 namespace ydb {
 
+Migration::~Migration() {}
+
 void Migration::up(pqxx::connection& conn) {
   pqxx::work txn{conn};
 

@@ -7,6 +7,7 @@ namespace ydb {
 
 class Migration {
  public:
+  virtual ~Migration();
   virtual void        up(pqxx::connection& conn);  // NOLINT
   virtual void        up(pqxx::work& txn);         // NOLINT
   virtual std::string name() = 0;

@@ -32,37 +32,13 @@ add_subdirectory(
   ${CMAKE_CURRENT_BINARY_DIR}/yutil
 )
 
-add_executable(ydb_test
-  src/connection-info.cpp
-  src/connection-info-builder.cpp
-  src/connection-pool.cpp
-  src/migration.cpp
-  src/migrations-runner.cpp
-
-  test/postgresql-test-environment.cpp
-  test/test-setup.cpp
-
-  test/connection-info_test.cpp
-  test/connection-info-builder_test.cpp
-  test/migrations_test.cpp
-  test/connection-pool_test.cpp
-)
-target_link_libraries(
-  ydb_test
-  # GTest::gtest_main
-  GTest::gtest
-  "${PQXX_LIBRARIES}"
-  yutil
-)
-include(GoogleTest)
-gtest_discover_tests(ydb_test)
-
 add_library(ydb
   src/connection-info.cpp
   src/connection-info-builder.cpp
   src/connection-pool.cpp
   src/migration.cpp
   src/migrations-runner.cpp
+  src/ydb.cpp
 )
 target_include_directories(ydb
   PUBLIC include
@@ -71,3 +47,28 @@ target_link_libraries(ydb
   "${PQXX_LIBRARIES}"
   yutil
 )
+
+add_library(ydb_test
+  test/postgresql-test-environment.cpp
+)
+target_include_directories(ydb_test PUBLIC test/include)
+target_link_libraries(ydb_test
+  ydb
+  # GTest::gtest_main
+  GTest::gtest
+)
+
+add_executable(ydb_test_test
+  test/test-setup.cpp
+
+  test/connection-info_test.cpp
+  test/connection-info-builder_test.cpp
+  test/migrations_test.cpp
+  test/connection-pool_test.cpp
+)
+target_link_libraries(ydb_test_test
+  ydb
+  ydb_test
+)
+include(GoogleTest)
+gtest_discover_tests(ydb_test_test)

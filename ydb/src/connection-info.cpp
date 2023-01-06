@@ -2,6 +2,18 @@
 
 namespace ydb {
 
+string ConnectionInfo::getDatabaseForEnv(const yutil::Env& env,
+                                         EnvType           envType) {
+  switch (envType) {
+    case EnvType::MAIN:
+      return env.dbDatabase();
+    case EnvType::DEFAULT:
+      return env.dbDefaultDatabase();
+    case EnvType::TEST:
+      return env.dbTestDatabase();
+  }
+}
+
 ConnectionInfo::ConnectionInfo()
     : type(Type::none),
       host(""),
@@ -31,28 +43,36 @@ ConnectionInfo::ConnectionInfo(const ConnectionInfo& connInfo)
       password(connInfo.password),
       database(connInfo.database) {}
 
+ConnectionInfo::ConnectionInfo(const yutil::Env& env, EnvType envType)
+    : type(Type::postgresql),
+      host(env.dbHost()),
+      port(env.dbPort()),
+      user(env.dbUser()),
+      password(env.dbPassword()),
+      database(getDatabaseForEnv(env, envType)) {}
+
 Type ConnectionInfo::getType() const {
   return type;
 }
 
 string ConnectionInfo::getHost() const {
-  return this->host;
+  return host;
 }
 
 string ConnectionInfo::getPort() const {
-  return this->port;
+  return port;
 }
 
 string ConnectionInfo::getUser() const {
-  return this->user;
+  return user;
 }
 
 string ConnectionInfo::getPassword() const {
-  return this->password;
+  return password;
 }
 
 string ConnectionInfo::getDatabase() const {
-  return this->database;
+  return database;
 }
 
 string ConnectionInfo::toURI() const {

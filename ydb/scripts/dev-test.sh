@@ -1,7 +1,7 @@
 #!/bin/bash
 set -o allexport; source .env; set +o allexport; set -e;
 
-cmake --build out/build --target ydb_test
+cmake --build out/build --target ydb_test_test
 
 echo
 echo "====================="

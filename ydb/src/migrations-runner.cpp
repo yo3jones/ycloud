@@ -3,6 +3,7 @@
 #include <string>
 
 #include "./migrations-runner.h"
+#include "./ydb.h"
 
 namespace ydb {
 
@@ -16,11 +17,22 @@ MigrationsRunnerOptions& MigrationsRunnerOptions::migrationTableName(
 }
 
 MigrationsRunner::MigrationsRunner(ConnectionInfo          connInfo,
+                                   ConnectionInfo          defaultConnInfo,
                                    MigrationsRunnerOptions opts)
-    : conn(connInfo.toURI()), migrations(), opts(opts) {}
+    : connInfo(connInfo),
+      defaultConnInfo(defaultConnInfo),
+      conn(nullptr),
+      migrations(),
+      opts(opts) {}
 
 MigrationsRunner::~MigrationsRunner() {
-  conn.close();
+  for (Migration* migration : migrations) {
+    delete migration;
+  }
+  if (conn != nullptr) {
+    conn->close();
+    delete conn;
+  }
 }
 
 MigrationsRunner& MigrationsRunner::registerMigration(Migration* migration) {
@@ -28,7 +40,21 @@ MigrationsRunner& MigrationsRunner::registerMigration(Migration* migration) {
   return *this;
 }
 
+MigrationsRunner& MigrationsRunner::registerMigrations(Migration* migrations[],
+                                                       size_t     size) {
+  for (int i = 0; i < size; i++) {
+    auto migration = migrations[i];
+    registerMigration(migration);
+  }
+
+  return *this;
+}
+
 void MigrationsRunner::run() {
+  createDatabase(defaultConnInfo, connInfo.getDatabase());
+
+  conn = new pqxx::connection{connInfo.toURI()};
+
   initMigrationsTable();
 
   std::sort(migrations.begin(), migrations.end(), compareMigrations);
@@ -36,6 +62,8 @@ void MigrationsRunner::run() {
   for (Migration* migration : migrations) {
     runMigration(migration);
   }
+
+  conn->close();
 }
 
 bool MigrationsRunner::compareMigrations(Migration* a, Migration* b) {
@@ -43,7 +71,7 @@ bool MigrationsRunner::compareMigrations(Migration* a, Migration* b) {
 }
 
 void MigrationsRunner::initMigrationsTable() {
-  pqxx::work txn{conn};
+  pqxx::work txn{*conn};
   txn.exec("CREATE TABLE IF NOT EXISTS " + opts._migrationTableName +
            " "
            "("
@@ -61,7 +89,7 @@ void MigrationsRunner::runMigration(Migration* migration) {
   }
 
   try {
-    migration->up(conn);
+    migration->up(*conn);
     completeMigration(migration, COMPLETE);
   } catch (...) {
     completeMigration(migration, ERROR);
@@ -70,7 +98,7 @@ void MigrationsRunner::runMigration(Migration* migration) {
 }
 
 bool MigrationsRunner::startMigration(Migration* migration) {
-  pqxx::work txn{conn};
+  pqxx::work txn{*conn};
 
   pqxx::result res = txn.exec_params("UPDATE " + opts._migrationTableName +
                                          " SET status=$1,"
@@ -101,7 +129,7 @@ bool MigrationsRunner::startMigration(Migration* migration) {
 
 void MigrationsRunner::completeMigration(Migration*    migration,
                                          const string& status) {
-  pqxx::work txn{conn};
+  pqxx::work txn{*conn};
 
   txn.exec_params("UPDATE " + opts._migrationTableName +
                       " "

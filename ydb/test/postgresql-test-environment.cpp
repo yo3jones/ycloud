@@ -1,34 +1,39 @@
-#include "../src/connection-info-builder.h"
+#include "../src/connection-info.h"
 #include "./postgresql-test-enviornment.h"
+#include "./yutil.h"
 
-using std::getenv;
 using ydb::ConnectionInfo;
-using ydb::ConnectionInfoBuilder;
-using ydb::Type;
 
-ConnectionInfo PostgresqlTestEnvironment::defaultConnInfo =
-    ConnectionInfoBuilder().build();
-ConnectionInfo PostgresqlTestEnvironment::connInfo =
-    ConnectionInfoBuilder().build();
+namespace ydb {
+namespace testing {
 
-PostgresqlTestEnvironment::PostgresqlTestEnvironment() {}
+ConnectionInfo PostgresqlTestEnvironment::defaultConnInfo = ConnectionInfo();
+ConnectionInfo PostgresqlTestEnvironment::connInfo        = ConnectionInfo();
 
-PostgresqlTestEnvironment::~PostgresqlTestEnvironment() {}
+PostgresqlTestEnvironment::PostgresqlTestEnvironment() {
+  yutil::Env env;
+  defaultConnInfo  = ConnectionInfo(env, ConnectionInfo::DEFAULT);
+  connInfo         = ConnectionInfo(env, ConnectionInfo::TEST);
+  migrationsRunner = new MigrationsRunner(connInfo, defaultConnInfo);
+}
+
+PostgresqlTestEnvironment::PostgresqlTestEnvironment(Migration* migrations[],
+                                                     size_t     size) {
+  yutil::Env env;
+  defaultConnInfo  = ConnectionInfo(env, ConnectionInfo::DEFAULT);
+  connInfo         = ConnectionInfo(env, ConnectionInfo::TEST);
+  migrationsRunner = new MigrationsRunner(connInfo, defaultConnInfo);
+  migrationsRunner->registerMigrations(migrations, size);
+}
+
+PostgresqlTestEnvironment::~PostgresqlTestEnvironment() {
+  delete migrationsRunner;
+}
 
 void PostgresqlTestEnvironment::SetUp() {
-  defaultConnInfo = ConnectionInfoBuilder()
-                        .type(Type::postgresql)
-                        .host(getenv("DB_HOST"))
-                        .port(getenv("DB_PORT"))
-                        .user(getenv("DB_USER"))
-                        .password(getenv("DB_PASSWORD"))
-                        .database(getenv("DB_DEFAULT_DATABASE"))
-                        .build();
-  connInfo = ConnectionInfoBuilder(defaultConnInfo)
-                 .database(getenv("DB_TEST_DATABASE"))
-                 .build();
-
   initTestDatabase(defaultConnInfo, connInfo.getDatabase());
+
+  migrationsRunner->run();
 }
 
 void PostgresqlTestEnvironment::TearDown() {
@@ -65,10 +70,9 @@ void PostgresqlTestEnvironment::initTestDatabase(ConnectionInfo connInfo,
 
   cleanupTestDatabase(conn, database);
 
-  auto txn = new pqxx::nontransaction(*conn);
-  txn->exec("CREATE DATABASE " + database);
-  delete txn;
-
   conn->close();
   delete conn;
 }
+
+}  // namespace testing
+}  // namespace ydb

@@ -10,6 +10,11 @@ endif()
 
 include(FetchContent)
 
+add_subdirectory(
+  ../ydb
+  ${CMAKE_CURRENT_BINARY_DIR}/ydb
+)
+
 FetchContent_Declare(
   crow
   URL https://github.com/CrowCpp/Crow/archive/refs/tags/v1.0+5.zip
@@ -27,29 +32,33 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 enable_testing()
 
-# add_executable(
-#   yorg_test
-#   src/db/db-connection-info.cpp
-#   test/db/db-connection-info_test.cpp
-# )
-# target_link_libraries(
-#   yorg_test
-#   GTest::gtest_main
-# )
-#
-# include(GoogleTest)
-# gtest_discover_tests(yorg_test)
+add_library(yorg_lib
+  src/controllers/hello-controller.cpp
+
+  src/migrations.cpp
+  src/migrations/2023-01-05T16-00-create-task.cpp
+)
+target_link_libraries(yorg_lib
+  ydb
+  Crow::Crow
+)
+
+add_executable(yorg_test
+  test/test-setup.cpp
+
+  test/first_test.cpp
+)
+target_link_libraries(yorg_test
+  yorg_lib
+  ydb_test
+  # GTest::gtest_main
+  GTest::gtest
+)
+
+include(GoogleTest)
+gtest_discover_tests(yorg_test)
 
 add_executable(yorg
   src/main.cpp
-
-  src/controllers/hello-controller.cpp
 )
-target_link_libraries(yorg Crow::Crow)
-# target_link_libraries(yorg "${PQXX_LIBRARIES}")
-
-add_subdirectory(out/deps/ydb)
-target_include_directories(yorg PUBLIC out/deps/ydb/include)
-target_link_libraries(yorg
-  ydb
-)
+target_link_libraries(yorg yorg_lib)

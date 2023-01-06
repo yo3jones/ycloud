@@ -10,13 +10,13 @@ class Env {
  public:
   Env();
 
-  string dbHost();
-  string dbPort();
-  string dbUser();
-  string dbPassword();
-  string dbDatabase();
-  string dbDefaultDatabase();
-  string dbTestDatabase();
+  string dbHost() const;
+  string dbPort() const;
+  string dbUser() const;
+  string dbPassword() const;
+  string dbDatabase() const;
+  string dbDefaultDatabase() const;
+  string dbTestDatabase() const;
 
  private:
   string _dbHost;
@@ -26,6 +26,8 @@ class Env {
   string _dbDatabase;
   string _dbDefaultDatabase;
   string _dbTestDatabase;
+
+  static string getEnv(const char* var, const string& defaultValue);
 };
 
 }  // namespace yutil
