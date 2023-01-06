@@ -18,23 +18,22 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 enable_testing()
 
-add_executable(yutil_test
-  src/semaphore.cpp
-  src/pool.h
-
-  test/semaphore_test.cpp
-  test/pool_test.cpp
-)
-target_link_libraries(yutil_test
-  GTest::gtest_main
-)
-include(GoogleTest)
-gtest_discover_tests(yutil_test)
-
 add_library(yutil
+  src/env.cpp
   src/semaphore.cpp
   src/pool.h
 )
 target_include_directories(yutil
   PUBLIC include
 )
+
+add_executable(yutil_test
+  test/semaphore_test.cpp
+  test/pool_test.cpp
+)
+target_link_libraries(yutil_test
+  yutil
+  GTest::gtest_main
+)
+include(GoogleTest)
+gtest_discover_tests(yutil_test)
