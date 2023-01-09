@@ -8,6 +8,8 @@
 
 namespace ydb {
 
+using std::vector;
+
 class MigrationsRunnerOptions {
  public:
   MigrationsRunnerOptions();
@@ -29,7 +31,7 @@ class MigrationsRunner {
   ~MigrationsRunner();
 
   MigrationsRunner& registerMigration(Migration* migration);
-  MigrationsRunner& registerMigrations(Migration* migrations[], size_t size);
+  MigrationsRunner& registerMigrations(const vector<Migration*>& migrations);
 
   void run();
 
@@ -43,7 +45,7 @@ class MigrationsRunner {
   ConnectionInfo          defaultConnInfo;
   pqxx::connection*       conn;
   MigrationsRunnerOptions opts;
-  std::vector<Migration*> migrations;
+  vector<Migration*>      migrations;
 
   static bool compareMigrations(Migration* a, Migration* b);
 

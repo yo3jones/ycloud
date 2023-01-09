@@ -1,4 +1,4 @@
-#include "../src/connection-info.h"
+#include "../src/ydb.h"
 #include "./postgresql-test-enviornment.h"
 #include "./yutil.h"
 
@@ -17,13 +17,13 @@ PostgresqlTestEnvironment::PostgresqlTestEnvironment() {
   migrationsRunner = new MigrationsRunner(connInfo, defaultConnInfo);
 }
 
-PostgresqlTestEnvironment::PostgresqlTestEnvironment(Migration* migrations[],
-                                                     size_t     size) {
+PostgresqlTestEnvironment::PostgresqlTestEnvironment(
+    const vector<Migration*>& migrations) {
   yutil::Env env;
   defaultConnInfo  = ConnectionInfo(env, ConnectionInfo::DEFAULT);
   connInfo         = ConnectionInfo(env, ConnectionInfo::TEST);
   migrationsRunner = new MigrationsRunner(connInfo, defaultConnInfo);
-  migrationsRunner->registerMigrations(migrations, size);
+  migrationsRunner->registerMigrations(migrations);
 }
 
 PostgresqlTestEnvironment::~PostgresqlTestEnvironment() {
@@ -31,7 +31,7 @@ PostgresqlTestEnvironment::~PostgresqlTestEnvironment() {
 }
 
 void PostgresqlTestEnvironment::SetUp() {
-  initTestDatabase(defaultConnInfo, connInfo.getDatabase());
+  cleanupTestDatabase(defaultConnInfo, connInfo.getDatabase());
 
   migrationsRunner->run();
 }
@@ -49,6 +49,11 @@ pqxx::connection* PostgresqlTestEnvironment::createConnection() {
   return createConnection(connInfo);
 }
 
+void PostgresqlTestEnvironment::execInTxn(
+    std::function<void(pqxx::work& txn)> fn) {  // NOLINT
+  ydb::execInTxn(connInfo, fn);
+}
+
 void PostgresqlTestEnvironment::cleanupTestDatabase(pqxx::connection* conn,
                                                     const string& database) {
   auto txn = new pqxx::nontransaction(*conn);
@@ -62,16 +67,6 @@ void PostgresqlTestEnvironment::cleanupTestDatabase(ConnectionInfo connInfo,
   cleanupTestDatabase(connection, database);
   connection->close();
   delete connection;
-}
-
-void PostgresqlTestEnvironment::initTestDatabase(ConnectionInfo connInfo,
-                                                 const string&  database) {
-  auto conn = createConnection(connInfo);
-
-  cleanupTestDatabase(conn, database);
-
-  conn->close();
-  delete conn;
 }
 
 }  // namespace testing

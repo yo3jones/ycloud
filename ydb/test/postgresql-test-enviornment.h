@@ -1,5 +1,7 @@
 #ifndef YDB_TEST_INCLUDE_POSTGRESQL_TEST_ENVIORNMENT_H_
 #define YDB_TEST_INCLUDE_POSTGRESQL_TEST_ENVIORNMENT_H_
+#include <functional>
+#include <vector>
 #include "../src/connection-info.h"
 #include "../src/migration.h"
 #include "../src/migrations-runner.h"
@@ -10,12 +12,13 @@
 namespace ydb {
 namespace testing {
 
+using std::vector;
 using ydb::ConnectionInfo;
 
 class PostgresqlTestEnvironment : public ::testing::Environment {
  public:
   PostgresqlTestEnvironment();
-  PostgresqlTestEnvironment(Migration* migrations[], size_t size);
+  explicit PostgresqlTestEnvironment(const vector<Migration*>& migrations);
   ~PostgresqlTestEnvironment() override;
 
   void SetUp() override;
@@ -23,6 +26,7 @@ class PostgresqlTestEnvironment : public ::testing::Environment {
 
   static pqxx::connection* createConnection(ConnectionInfo connInfo);
   static pqxx::connection* createConnection();
+  static void execInTxn(std::function<void(pqxx::work& txn)> fn);  // NOLINT
 
   static ConnectionInfo defaultConnInfo;
   static ConnectionInfo connInfo;
@@ -34,7 +38,6 @@ class PostgresqlTestEnvironment : public ::testing::Environment {
                                   const string&     database);
   static void cleanupTestDatabase(ConnectionInfo connInfo,
                                   const string&  database);
-  static void initTestDatabase(ConnectionInfo connInfo, const string& database);
 };
 
 }  // namespace testing

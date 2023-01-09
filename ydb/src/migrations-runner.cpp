@@ -40,10 +40,9 @@ MigrationsRunner& MigrationsRunner::registerMigration(Migration* migration) {
   return *this;
 }
 
-MigrationsRunner& MigrationsRunner::registerMigrations(Migration* migrations[],
-                                                       size_t     size) {
-  for (int i = 0; i < size; i++) {
-    auto migration = migrations[i];
+MigrationsRunner& MigrationsRunner::registerMigrations(
+    const vector<Migration*>& migrations) {
+  for (Migration* migration : migrations) {
     registerMigration(migration);
   }
 

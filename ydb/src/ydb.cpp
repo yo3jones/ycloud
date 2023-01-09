@@ -17,4 +17,20 @@ void createDatabase(ConnectionInfo defaultConnInfo,
   conn.close();
 }
 
+void execInTxn(pqxx::connection&                    conn,  // NOLINT
+               std::function<void(pqxx::work& txn)> fn) {  // NOLINT
+  pqxx::work txn{conn};
+
+  fn(txn);
+
+  txn.commit();
+}
+
+void execInTxn(const ConnectionInfo&                connInfo,
+               std::function<void(pqxx::work& txn)> fn) {  // NOLINT
+  pqxx::connection conn{connInfo.toURI()};
+  execInTxn(conn, fn);
+  conn.close();
+}
+
 }  // namespace ydb
