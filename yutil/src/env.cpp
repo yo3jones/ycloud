@@ -11,14 +11,24 @@ string Env::getEnv(const char* var, const string& defaultValue) {
   return value;
 }
 
+int Env::getIntEnv(const char* var, const string& defaultValue) {
+  return std::stoi(getEnv(var, defaultValue));
+}
+
 Env::Env()
-    : _dbHost(getEnv("DB_HOST", "localhost")),
+    : _httpPort(getIntEnv("HTTP_PORT", "8080")),
+      _dbHost(getEnv("DB_HOST", "localhost")),
       _dbPort(getEnv("DB_PORT", "5432")),
       _dbUser(getEnv("DB_USER", "root")),
       _dbPassword(getEnv("DB_PASSWORD", "password")),
       _dbDatabase(getEnv("DB_DATABASE", "")),
       _dbDefaultDatabase(getEnv("DB_DEFAULT_DATABASE", "default")),
-      _dbTestDatabase(getEnv("DB_TEST_DATABASE", "")) {}
+      _dbTestDatabase(getEnv("DB_TEST_DATABASE", "")),
+      _dbPoolSize(getIntEnv("DB_POOL_SIZE", "10")) {}
+
+int Env::httpPort() const {
+  return _httpPort;
+}
 
 string Env::dbHost() const {
   return _dbHost;
@@ -40,6 +50,10 @@ string Env::dbDefaultDatabase() const {
 }
 string Env::dbTestDatabase() const {
   return _dbTestDatabase;
+}
+
+int Env::dbPoolSize() const {
+  return _dbPoolSize;
 }
 
 }  // namespace yutil

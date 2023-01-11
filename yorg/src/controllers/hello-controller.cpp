@@ -1,6 +1,8 @@
 #include "./hello-controller.h"
-#include <string>
 
-string HelloController::get() {
+HelloController::HelloController(ConnAccessor& connAccessor)
+    : connAccessor(connAccessor) {}
+
+string HelloController::get(const crow::request& req) {
   return "hi there";
 }

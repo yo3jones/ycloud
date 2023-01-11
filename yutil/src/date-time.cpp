@@ -11,6 +11,11 @@
 
 namespace yutil {
 
+#define DAY_MILLS    86400000
+#define HOUR_MILLS   3600000
+#define MINUTE_MILLS 60000
+#define SECOND_MILLS 1000
+
 DateTime::DateTime() {
   auto now      = std::chrono::system_clock::now();
   auto duration = now.time_since_epoch();
@@ -22,7 +27,7 @@ DateTime::DateTime(const string& iso) {
   mills  = durationFromDate(d);
 }
 
-string DateTime::toString() {
+string DateTime::toISO() const {
   auto [year, month, day, hour, minute, second, millisecond] =
       dateFromDuration(mills);
 
@@ -40,14 +45,14 @@ DateTime::date DateTime::dateFromDuration(
     std::chrono::duration<long long, std::milli> duration) {
   long long mills = duration.count();
 
-  long long days          = mills / (1000 * 60 * 60 * 24);
-  long long leftoverMills = mills - (days * 1000 * 60 * 60 * 24);
-  int       hours         = leftoverMills / (1000 * 60 * 60);
-  leftoverMills           = leftoverMills - (hours * 1000 * 60 * 60);
-  int minutes             = leftoverMills / (1000 * 60);
-  leftoverMills           = leftoverMills - (minutes * 1000 * 60);
-  int seconds             = leftoverMills / 1000;
-  leftoverMills           = leftoverMills - (seconds * 1000);
+  long long days          = mills / DAY_MILLS;
+  long long leftoverMills = mills - (days * DAY_MILLS);
+  int       hours         = leftoverMills / HOUR_MILLS;
+  leftoverMills           = leftoverMills - (hours * HOUR_MILLS);
+  int minutes             = leftoverMills / MINUTE_MILLS;
+  leftoverMills           = leftoverMills - (minutes * MINUTE_MILLS);
+  int seconds             = leftoverMills / SECOND_MILLS;
+  leftoverMills           = leftoverMills - (seconds * SECOND_MILLS);
 
   days += 719468;
   long long era = (days >= 0 ? days : days - 146096) / 146097;
@@ -107,10 +112,10 @@ std::chrono::duration<long long, std::milli> DateTime::durationFromDate(
   long long doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
   long long epocDays = era * 146097 + static_cast<long long>(doe) - 719468;
 
-  long long epocMills = epocDays * 24 * 60 * 60 * 1000;
-  epocMills += hour * 60 * 60 * 1000;
-  epocMills += minute * 60 * 1000;
-  epocMills += second * 1000;
+  long long epocMills = epocDays * DAY_MILLS;
+  epocMills += hour * HOUR_MILLS;
+  epocMills += minute * MINUTE_MILLS;
+  epocMills += second * SECOND_MILLS;
   epocMills += millisecond;
 
   return std::chrono::duration<long long, std::milli>(epocMills);

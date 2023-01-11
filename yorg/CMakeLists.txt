@@ -33,9 +33,17 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 add_library(yorg_lib
-  src/controllers/hello-controller.cpp
-
+  src/conn-accessor.cpp
+  src/controllers.cpp
+  src/dependencies.cpp
   src/migrations.cpp
+  src/server.cpp
+
+  src/middleware/db-middleware.cpp
+
+  src/controllers/hello-controller.cpp
+  src/controllers/tasks-controller.cpp
+
   src/migrations/2023-01-05T16-00-create-task.cpp
 )
 target_link_libraries(yorg_lib
