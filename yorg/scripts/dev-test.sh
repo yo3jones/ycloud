@@ -7,4 +7,4 @@ echo
 echo "====================="
 echo
 
-./out/build/yorg_test
+./out/build/yorg_test $1

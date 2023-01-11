@@ -1,15 +1,8 @@
-#include "controllers/hello-controller.h"
-#include "crow.h"
+#include "./server.h"
+#include "yutil.h"
 
 int main() {
-  crow::SimpleApp  app;
-  HelloController  helloController;
-  HelloController* hc = &helloController;
-
-  CROW_ROUTE(app, "/hello")
-  ([hc]() { return hc->get(); });
-
-  app.port(8080).multithreaded().run();
-
+  yorg::Server server{yutil::Env::PROD};
+  server.start();
   return 0;
 }

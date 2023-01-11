@@ -13,7 +13,7 @@ class DateTime {
   DateTime();
   DateTime(const string& iso);
 
-  string toString();
+  string toISO() const;
 
  private:
   std::chrono::duration<long long, std::milli> mills;

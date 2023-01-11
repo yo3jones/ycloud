@@ -8,7 +8,7 @@ namespace ydb {
 
 class ConnectionPool : public yutil::Pool<pqxx::connection> {
  public:
-  ConnectionPool(ConnectionInfo connInfo, int maxConnections);
+  ConnectionPool(const ConnectionInfo& connInfo, int maxConnections);
 };
 
 }  // namespace ydb

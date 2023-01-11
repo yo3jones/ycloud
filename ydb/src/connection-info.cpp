@@ -3,13 +3,13 @@
 namespace ydb {
 
 string ConnectionInfo::getDatabaseForEnv(const yutil::Env& env,
-                                         EnvType           envType) {
-  switch (envType) {
-    case EnvType::MAIN:
+                                         DBNameType        dbNameType) {
+  switch (dbNameType) {
+    case DBNameType::MAIN:
       return env.dbDatabase();
-    case EnvType::DEFAULT:
+    case DBNameType::DEFAULT:
       return env.dbDefaultDatabase();
-    case EnvType::TEST:
+    case DBNameType::TEST:
       return env.dbTestDatabase();
   }
 }
@@ -43,7 +43,7 @@ ConnectionInfo::ConnectionInfo(const ConnectionInfo& connInfo)
       password(connInfo.password),
       database(connInfo.database) {}
 
-ConnectionInfo::ConnectionInfo(const yutil::Env& env, EnvType envType)
+ConnectionInfo::ConnectionInfo(const yutil::Env& env, DBNameType envType)
     : type(Type::postgresql),
       host(env.dbHost()),
       port(env.dbPort()),

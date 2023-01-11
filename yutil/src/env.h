@@ -8,7 +8,11 @@ using std::string;
 
 class Env {
  public:
+  enum EnvType { DEV, TEST, PROD };
+
   Env();
+
+  int httpPort() const;
 
   string dbHost() const;
   string dbPort() const;
@@ -17,8 +21,11 @@ class Env {
   string dbDatabase() const;
   string dbDefaultDatabase() const;
   string dbTestDatabase() const;
+  int    dbPoolSize() const;
 
  private:
+  int _httpPort;
+
   string _dbHost;
   string _dbPort;
   string _dbUser;
@@ -26,8 +33,10 @@ class Env {
   string _dbDatabase;
   string _dbDefaultDatabase;
   string _dbTestDatabase;
+  int    _dbPoolSize;
 
   static string getEnv(const char* var, const string& defaultValue);
+  static int    getIntEnv(const char* var, const string& defaultValue);
 };
 
 }  // namespace yutil
