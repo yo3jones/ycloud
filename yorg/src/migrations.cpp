@@ -1,22 +1,22 @@
-#include <vector>
+#include "./migrations.h"
 #include "./migrations/2023-01-05T16-00-create-task.cpp"
-#include "ydb.h"
 
 namespace yorg {
 namespace migrations {
 
-using std::vector;
 using ydb::ConnectionInfo;
-using ydb::Migration;
 using ydb::MigrationsRunnerOptions;
 
-const vector<Migration*> MIGRATIONS{new CreateTaskMigration()};
+Migrations::Migrations() : migrations{new CreateTaskMigration} {}
 
-void runMigrations(ConnectionInfo          connInfo,
-                   ConnectionInfo          defaultConnInfo,
-                   MigrationsRunnerOptions opts = MigrationsRunnerOptions()) {
-  ydb::MigrationsRunner(connInfo, defaultConnInfo, opts)
-      .registerMigrations(MIGRATIONS)
+const vector<Migration*>& Migrations::get() {
+  return migrations;
+}
+
+void Migrations::run(const ConnectionInfo& connInfo,
+                     const ConnectionInfo& defaultConnInfo) {
+  ydb::MigrationsRunner(connInfo, defaultConnInfo)
+      .registerMigrations(migrations)
       .run();
 }
 

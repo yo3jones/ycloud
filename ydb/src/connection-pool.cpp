@@ -2,7 +2,8 @@
 
 namespace ydb {
 
-ConnectionPool::ConnectionPool(ConnectionInfo connInfo, int maxConnections)
+ConnectionPool::ConnectionPool(const ConnectionInfo& connInfo,
+                               int                   maxConnections)
     : yutil::Pool<pqxx::connection>(
           maxConnections,
           [connInfo]() -> pqxx::connection* {

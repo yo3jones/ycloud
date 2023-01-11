@@ -1,15 +1,33 @@
+#include "./dependencies.h"
+#include "./migrations.h"
+#include "controllers.h"
 #include "controllers/hello-controller.h"
 #include "crow.h"
+#include "middleware/db-middleware.h"
+#include "ydb.h"
+
+using ydb::ConnectionInfo;
+using yorg::Dependencies;
+using yutil::Env;
 
 int main() {
-  crow::SimpleApp  app;
-  HelloController  helloController;
-  HelloController* hc = &helloController;
+  Env                           env;
+  ConnectionInfo                connInfo{env, ConnectionInfo::MAIN};
+  ConnectionInfo                defaultConnInfo{env, ConnectionInfo::DEFAULT};
+  crow::App<yorg::DbMiddleware> app;
+  Dependencies                  deps{env, connInfo, app};
 
-  CROW_ROUTE(app, "/hello")
-  ([hc]() { return hc->get(); });
+  // run migrations
+  deps.getMigrations().run(connInfo, defaultConnInfo);
 
-  app.port(8080).multithreaded().run();
+  // initialize middleware
+  app.get_middleware<yorg::DbMiddleware>().setConnectionPool(
+      deps.getConnectionPool());
+
+  // initialize routes
+  deps.getControllers().registerControllers();
+
+  app.port(env.httpPort()).multithreaded().run();
 
   return 0;
 }
