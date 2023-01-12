@@ -22,6 +22,7 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 add_library(yutil
+  src/date-time.cpp
   src/env.cpp
   src/semaphore.cpp
   src/pool.h
@@ -33,6 +34,7 @@ target_include_directories(yutil
 )
 
 add_executable(yutil_test
+  test/date-time_test.cpp
   test/semaphore_test.cpp
   test/pool_test.cpp
   test/uuid_test.cpp
