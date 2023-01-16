@@ -2,7 +2,6 @@
 #include <future>
 #include <iostream>
 #include <vector>
-#include "startable.h"
 
 namespace ymicroservice {
 
@@ -22,6 +21,18 @@ void Service::start() {
   runShutdown();
 }
 
+void Service::stop() {
+  for (auto startable : startableCapabilities) {
+    startable->stop();
+  }
+}
+
+void Service::waitForStart() {
+  for (auto startable : startableCapabilities) {
+    startable->waitForStart();
+  }
+}
+
 void Service::runBeforeStart() {
   for (auto capability : orderedCapabilities) {
     capability->beforeStart(*this);
@@ -32,19 +43,15 @@ void Service::runStart() {
   std::vector<std::future<void>> futures;
 
   // use a thread per start call
-  for (auto* capability : orderedCapabilities) {
-    auto* startable = dynamic_cast<Startable*>(capability);
-    if (startable == nullptr) {
-      continue;
-    }
-
+  for (auto* startable : startableCapabilities) {
     auto future = std::async(&Startable::start, startable);
     futures.push_back(std::move(future));
   }
 
   // wait for startables to complete
   for (int i = 0; i < futures.size(); i++) {
-    futures[i].wait();
+    // calling get will throw any exceptions thrown
+    futures[i].get();
   }
 }
 

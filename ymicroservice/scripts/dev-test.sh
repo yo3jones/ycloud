@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-cmake --build out/build --target ymicroservice_test
+cmake --build out/build --target ymicroservice_test_test
 
 echo
 echo "====================="

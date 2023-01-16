@@ -44,6 +44,8 @@ class TestCapabilityOne : public TestCapability, public Startable {
       : TestCapability(testData, key) {}
 
   void start() override { testData.status.insert_or_assign(key, "started"); }
+
+  void stop() override {}
 };
 
 class TestCapabilityTwo : public TestCapability {
@@ -64,6 +66,8 @@ class TestCapabilityBlocking : public TestCapability, public Startable {
     semaphore.acquire();
     testData.status.insert_or_assign(key, "complete");
   }
+
+  void stop() override {}
 };
 
 TEST(ServiceTest, start) {
