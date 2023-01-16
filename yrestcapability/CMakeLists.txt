@@ -71,7 +71,7 @@ target_include_directories(yrestcapability_test
 add_executable(yrestcapability_test_test
   test/test-setup.cpp
 
-  test/some_test.cpp
+  test/rest-capability_test.cpp
 )
 target_link_libraries(yrestcapability_test_test
   yrestcapability_test

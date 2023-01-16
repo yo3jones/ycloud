@@ -20,7 +20,6 @@ class Env {
   string dbPassword() const;
   string dbDatabase() const;
   string dbDefaultDatabase() const;
-  string dbTestDatabase() const;
   int    dbPoolSize() const;
 
  private:
@@ -32,7 +31,6 @@ class Env {
   string _dbPassword;
   string _dbDatabase;
   string _dbDefaultDatabase;
-  string _dbTestDatabase;
   int    _dbPoolSize;
 
   static string getEnv(const char* var, const string& defaultValue);

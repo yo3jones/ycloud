@@ -23,7 +23,6 @@ Env::Env()
       _dbPassword(getEnv("DB_PASSWORD", "password")),
       _dbDatabase(getEnv("DB_DATABASE", "")),
       _dbDefaultDatabase(getEnv("DB_DEFAULT_DATABASE", "default")),
-      _dbTestDatabase(getEnv("DB_TEST_DATABASE", "")),
       _dbPoolSize(getIntEnv("DB_POOL_SIZE", "10")) {}
 
 int Env::httpPort() const {
@@ -47,9 +46,6 @@ string Env::dbDatabase() const {
 }
 string Env::dbDefaultDatabase() const {
   return _dbDefaultDatabase;
-}
-string Env::dbTestDatabase() const {
-  return _dbTestDatabase;
 }
 
 int Env::dbPoolSize() const {

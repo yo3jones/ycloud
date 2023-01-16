@@ -21,17 +21,12 @@ MigrationsRunner::MigrationsRunner(ConnectionInfo          connInfo,
                                    MigrationsRunnerOptions opts)
     : connInfo(connInfo),
       defaultConnInfo(defaultConnInfo),
-      conn(nullptr),
       migrations(),
       opts(opts) {}
 
 MigrationsRunner::~MigrationsRunner() {
   for (Migration* migration : migrations) {
     delete migration;
-  }
-  if (conn != nullptr) {
-    conn->close();
-    delete conn;
   }
 }
 
@@ -52,25 +47,25 @@ MigrationsRunner& MigrationsRunner::registerMigrations(
 void MigrationsRunner::run() {
   createDatabase(defaultConnInfo, connInfo.getDatabase());
 
-  conn = new pqxx::connection{connInfo.toURI()};
+  pqxx::connection conn{connInfo.toURI()};
 
-  initMigrationsTable();
+  initMigrationsTable(conn);
 
   std::sort(migrations.begin(), migrations.end(), compareMigrations);
 
   for (Migration* migration : migrations) {
-    runMigration(migration);
+    runMigration(conn, migration);
   }
 
-  conn->close();
+  conn.close();
 }
 
 bool MigrationsRunner::compareMigrations(Migration* a, Migration* b) {
   return a->name() <= b->name();
 }
 
-void MigrationsRunner::initMigrationsTable() {
-  pqxx::work txn{*conn};
+void MigrationsRunner::initMigrationsTable(pqxx::connection& conn) {
+  pqxx::work txn{conn};
   txn.exec("CREATE TABLE IF NOT EXISTS " + opts._migrationTableName +
            " "
            "("
@@ -82,22 +77,24 @@ void MigrationsRunner::initMigrationsTable() {
   txn.commit();
 }
 
-void MigrationsRunner::runMigration(Migration* migration) {
-  if (!startMigration(migration)) {
+void MigrationsRunner::runMigration(pqxx::connection& conn,
+                                    Migration*        migration) {
+  if (!startMigration(conn, migration)) {
     return;
   }
 
   try {
-    migration->up(*conn);
-    completeMigration(migration, COMPLETE);
+    migration->up(conn);
+    completeMigration(conn, migration, COMPLETE);
   } catch (...) {
-    completeMigration(migration, ERROR);
+    completeMigration(conn, migration, ERROR);
     throw;
   }
 }
 
-bool MigrationsRunner::startMigration(Migration* migration) {
-  pqxx::work txn{*conn};
+bool MigrationsRunner::startMigration(pqxx::connection& conn,
+                                      Migration*        migration) {
+  pqxx::work txn{conn};
 
   pqxx::result res = txn.exec_params("UPDATE " + opts._migrationTableName +
                                          " SET status=$1,"
@@ -126,9 +123,10 @@ bool MigrationsRunner::startMigration(Migration* migration) {
   return true;
 }
 
-void MigrationsRunner::completeMigration(Migration*    migration,
-                                         const string& status) {
-  pqxx::work txn{*conn};
+void MigrationsRunner::completeMigration(pqxx::connection& conn,
+                                         Migration*        migration,
+                                         const string&     status) {
+  pqxx::work txn{conn};
 
   txn.exec_params("UPDATE " + opts._migrationTableName +
                       " "
