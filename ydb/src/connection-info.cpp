@@ -2,16 +2,11 @@
 
 namespace ydb {
 
+const bool ConnectionInfo::USE_DEFAULT_DATABASE = true;
+
 string ConnectionInfo::getDatabaseForEnv(const yutil::Env& env,
-                                         DBNameType        dbNameType) {
-  switch (dbNameType) {
-    case DBNameType::MAIN:
-      return env.dbDatabase();
-    case DBNameType::DEFAULT:
-      return env.dbDefaultDatabase();
-    case DBNameType::TEST:
-      return env.dbTestDatabase();
-  }
+                                         bool              useDefaultDatabase) {
+  return useDefaultDatabase ? env.dbDefaultDatabase() : env.dbDatabase();
 }
 
 ConnectionInfo::ConnectionInfo()
@@ -43,13 +38,13 @@ ConnectionInfo::ConnectionInfo(const ConnectionInfo& connInfo)
       password(connInfo.password),
       database(connInfo.database) {}
 
-ConnectionInfo::ConnectionInfo(const yutil::Env& env, DBNameType envType)
+ConnectionInfo::ConnectionInfo(const yutil::Env& env, bool useDefaultDatabase)
     : type(Type::postgresql),
       host(env.dbHost()),
       port(env.dbPort()),
       user(env.dbUser()),
       password(env.dbPassword()),
-      database(getDatabaseForEnv(env, envType)) {}
+      database(getDatabaseForEnv(env, useDefaultDatabase)) {}
 
 Type ConnectionInfo::getType() const {
   return type;

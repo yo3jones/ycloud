@@ -43,16 +43,17 @@ class MigrationsRunner {
 
   ConnectionInfo          connInfo;
   ConnectionInfo          defaultConnInfo;
-  pqxx::connection*       conn;
   MigrationsRunnerOptions opts;
   vector<Migration*>      migrations;
 
   static bool compareMigrations(Migration* a, Migration* b);
 
-  void initMigrationsTable();
-  void runMigration(Migration* migration);
-  bool startMigration(Migration* migration);
-  void completeMigration(Migration* migration, const string& status);
+  void initMigrationsTable(pqxx::connection& conn);                   // NOLINT
+  void runMigration(pqxx::connection& conn, Migration* migration);    // NOLINT
+  bool startMigration(pqxx::connection& conn, Migration* migration);  // NOLINT
+  void completeMigration(pqxx::connection& conn,                      // NOLINT
+                         Migration*        migration,
+                         const string&     status);
 };
 
 }  // namespace ydb

@@ -12,16 +12,16 @@ ConnectionInfo PostgresqlTestEnvironment::connInfo        = ConnectionInfo();
 
 PostgresqlTestEnvironment::PostgresqlTestEnvironment() {
   yutil::Env env;
-  defaultConnInfo  = ConnectionInfo(env, ConnectionInfo::DEFAULT);
-  connInfo         = ConnectionInfo(env, ConnectionInfo::TEST);
+  defaultConnInfo  = ConnectionInfo(env, ConnectionInfo::USE_DEFAULT_DATABASE);
+  connInfo         = ConnectionInfo(env);
   migrationsRunner = new MigrationsRunner(connInfo, defaultConnInfo);
 }
 
 PostgresqlTestEnvironment::PostgresqlTestEnvironment(
     const vector<Migration*>& migrations) {
   yutil::Env env;
-  defaultConnInfo  = ConnectionInfo(env, ConnectionInfo::DEFAULT);
-  connInfo         = ConnectionInfo(env, ConnectionInfo::TEST);
+  defaultConnInfo  = ConnectionInfo(env, ConnectionInfo::USE_DEFAULT_DATABASE);
+  connInfo         = ConnectionInfo(env);
   migrationsRunner = new MigrationsRunner(connInfo, defaultConnInfo);
   migrationsRunner->registerMigrations(migrations);
 }

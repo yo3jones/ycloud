@@ -11,7 +11,7 @@ enum Type { none, postgresql };
 
 class ConnectionInfo {
  public:
-  enum DBNameType { MAIN, DEFAULT, TEST };
+  static const bool USE_DEFAULT_DATABASE;
 
   ConnectionInfo();
   ConnectionInfo(Type   type,
@@ -21,7 +21,8 @@ class ConnectionInfo {
                  string password,
                  string database);
   ConnectionInfo(const ConnectionInfo& connInfo);
-  explicit ConnectionInfo(const yutil::Env& env, DBNameType dbNameType);
+  explicit ConnectionInfo(const yutil::Env& env,
+                          bool              useDefaultDatabase = false);
 
   Type getType() const;
 
@@ -45,7 +46,8 @@ class ConnectionInfo {
   string password;
   string database;
 
-  static string getDatabaseForEnv(const yutil::Env& env, DBNameType envType);
+  static string getDatabaseForEnv(const yutil::Env& env,
+                                  bool              useDefaultDatabase);
 };
 
 }  // namespace ydb

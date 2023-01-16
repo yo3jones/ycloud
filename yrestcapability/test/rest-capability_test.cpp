@@ -3,7 +3,7 @@
 #include "gtest/gtest.h"
 #include "include/rest-client.h"
 
-TEST(foo, bar) {
+TEST(RESTCapabilityTest, test) {
   ymicroservice::RESTClient client{yutil::Env()};
   crow::json::rvalue        res = client.get("/hello");
 
