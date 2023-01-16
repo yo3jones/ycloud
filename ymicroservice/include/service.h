@@ -6,6 +6,7 @@
 #include <vector>
 #include "capabilities.h"
 #include "capability.h"
+#include "startable.h"
 
 namespace ymicroservice {
 
@@ -21,7 +22,12 @@ class Service : public Capabilities {
   template <class C>
   Service& addCapability(C* capability) {
     capabilities.insert_or_assign(GET_KEY(C), capability);
+
     orderedCapabilities.push_back(capability);
+
+    if (auto* startable = dynamic_cast<Startable*>(capability)) {
+      startableCapabilities.push_back(startable);
+    }
     return *this;
   }
 
@@ -32,9 +38,14 @@ class Service : public Capabilities {
 
   void start();
 
+  void stop();
+
+  void waitForStart();
+
  private:
   std::unordered_map<string, Capability*> capabilities;
   std::vector<Capability*>                orderedCapabilities;
+  std::vector<Startable*>                 startableCapabilities;
 
   void runBeforeStart();
   void runStart();
