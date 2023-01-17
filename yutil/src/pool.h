@@ -48,9 +48,9 @@ class Pool {
   }
 
   void release(T* value) {
-    const std::lock_guard<std::mutex> l(lock);
+    // const std::lock_guard<std::mutex> l(lock);
     available.push_back(value);
-    semaphore.release();
+    // semaphore.release();
   }
 
   size_t availableCount() { return available.size(); }

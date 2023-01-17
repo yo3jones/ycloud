@@ -5,13 +5,14 @@ namespace ymicroservice {
 using ydb::ConnectionInfo;
 
 DBCapability::DBCapability(const Env& env)
-    : _connPool(ConnectionInfo(env), env.dbPoolSize()),
+    : connInfo(env),
+      _connPool(connInfo, env.dbPoolSize()),
       migrationsRunner(
-          ConnectionInfo(env),
+          connInfo,
           ConnectionInfo(env, ConnectionInfo::USE_DEFAULT_DATABASE)) {}
 
-ConnectionPool& DBCapability::connPool() {
-  return _connPool;
+ConnectionPool* DBCapability::connPool() {
+  return &_connPool;
 }
 
 DBCapability* DBCapability::registerMigration(Migration* migration) {
@@ -25,7 +26,7 @@ DBCapability* DBCapability::registerMigrations(
   return this;
 }
 
-void DBCapability::beforeStart(Capabilities& capabilities) {
+void DBCapability::beforeStart(const ROTypeMap& capabilities) {
   migrationsRunner.run();
 }
 

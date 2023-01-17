@@ -9,7 +9,6 @@
 #include "startable.h"
 #include "ymicroservice.h"
 
-using ymicroservice::Capabilities;
 using ymicroservice::Capability;
 using ymicroservice::Service;
 using ymicroservice::Startable;
@@ -30,7 +29,7 @@ class TestCapability : public Capability {
     testData.status.insert_or_assign(key, "constructed");
   }
 
-  void beforeStart(Capabilities& capabilities) override {
+  void beforeStart(const yutil::ROTypeMap& capabilities) override {
     testData.beforeStartCalls.push_back(key);
     testData.status.insert_or_assign(key, "initialized");
   }
