@@ -1,17 +1,18 @@
 #ifndef YMICROSERVICE_INCLUDE_CAPABILITY_H_
 #define YMICROSERVICE_INCLUDE_CAPABILITY_H_
 #include <string>
-#include "capabilities.h"
+#include "yutil.h"
 
 namespace ymicroservice {
 
 using std::string;
+using yutil::ROTypeMap;
 
 class Capability {
  public:
   virtual ~Capability() = default;
 
-  virtual void beforeStart(Capabilities& capabilities);
+  virtual void beforeStart(const ROTypeMap& capabilities);
 
   virtual void shutdown();
 };

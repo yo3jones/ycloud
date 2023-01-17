@@ -8,25 +8,6 @@ if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
   cmake_policy(SET CMP0135 NEW)
 endif()
 
-add_subdirectory(
-  ../ymicroservice
-  ${CMAKE_CURRENT_BINARY_DIR}/ymicroservice
-)
-add_subdirectory(
-  ../yutil
-  ${CMAKE_CURRENT_BINARY_DIR}/yutil
-)
-
-include(FetchContent)
-
-# Google Test
-FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/58d77fa8070e8cec2dc1ed015d66b454c8d78850.zip
-)
-FetchContent_MakeAvailable(googletest)
-enable_testing()
-
 FetchContent_Declare(
   crow
   URL https://github.com/CrowCpp/Crow/archive/refs/tags/v1.0+5.zip
@@ -35,6 +16,12 @@ FetchContent_Declare(
   # requires boost
 )
 FetchContent_MakeAvailable(crow)
+
+FetchContent_Declare(
+  curlpp
+  URL https://github.com/jpbarrette/curlpp/archive/refs/tags/v0.8.1.zip
+)
+FetchContent_MakeAvailable(curlpp)
 
 FetchContent_Declare(
   curlpp

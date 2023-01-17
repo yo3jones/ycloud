@@ -1,10 +1,9 @@
 #include "capability.h"
 #include <iostream>
-#include "capabilities.h"
 
 namespace ymicroservice {
 
-void Capability::beforeStart(Capabilities& capabilities) {}
+void Capability::beforeStart(const ROTypeMap& capabilities) {}
 
 void Capability::shutdown() {}
 

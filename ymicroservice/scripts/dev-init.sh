@@ -11,10 +11,12 @@ ln -f -s ../.clang-format .clang-format
 ln -f -s ../CPPLINT.cfg CPPLINT.cfg
 
 # initialize the cmake project
-cmake -S . -B out/build
+cmake -S ../ -B ../out/build
 
 # run the cmake build
-cmake --build out/build
+cmake \
+  --build ../out/build \
+  --target ymicroservice ymicroservice_test ymicroservice_test_test
 
 # sym link compile_commands.json for ide
-ln -s -f out/build/compile_commands.json compile_commands.json
+ln -s -f ../out/build/compile_commands.json compile_commands.json

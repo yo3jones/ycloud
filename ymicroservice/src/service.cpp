@@ -5,10 +5,11 @@
 
 namespace ymicroservice {
 
-Service::Service() : capabilities(), orderedCapabilities() {}
+Service::Service()
+    : capabilities(), orderedCapabilities(), startableCapabilities() {}
 
 Service::~Service() {
-  for (auto [_, capability] : capabilities) {
+  for (auto capability : orderedCapabilities) {
     delete capability;
   }
 }
@@ -35,7 +36,7 @@ void Service::waitForStart() {
 
 void Service::runBeforeStart() {
   for (auto capability : orderedCapabilities) {
-    capability->beforeStart(*this);
+    capability->beforeStart(capabilities);
   }
 }
 

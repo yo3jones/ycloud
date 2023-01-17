@@ -4,24 +4,23 @@
 #include <typeinfo>
 #include <unordered_map>
 #include <vector>
-#include "capabilities.h"
 #include "capability.h"
 #include "startable.h"
+#include "yutil.h"
 
 namespace ymicroservice {
 
 using std::string;
+using yutil::TypeMap;
 
-class Service : public Capabilities {
-#define GET_KEY(C) string(typeid(C).name())
-
+class Service {
  public:
   Service();
   ~Service();
 
   template <class C>
   Service& addCapability(C* capability) {
-    capabilities.insert_or_assign(GET_KEY(C), capability);
+    capabilities.insert<C>(capability);
 
     orderedCapabilities.push_back(capability);
 
@@ -33,7 +32,7 @@ class Service : public Capabilities {
 
   template <class C>
   C* getCapability() const {
-    return (C*)capabilities.at(GET_KEY(C));
+    return capabilities.get<C>();
   }
 
   void start();
@@ -43,9 +42,9 @@ class Service : public Capabilities {
   void waitForStart();
 
  private:
-  std::unordered_map<string, Capability*> capabilities;
-  std::vector<Capability*>                orderedCapabilities;
-  std::vector<Startable*>                 startableCapabilities;
+  TypeMap                  capabilities;
+  std::vector<Capability*> orderedCapabilities;
+  std::vector<Startable*>  startableCapabilities;
 
   void runBeforeStart();
   void runStart();
