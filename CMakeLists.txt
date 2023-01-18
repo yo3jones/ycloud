@@ -26,3 +26,5 @@ add_subdirectory(ymicroservice)
 add_subdirectory(yrestcapability)
 add_subdirectory(ydbcapability)
 add_subdirectory(ydbrestcapability)
+
+add_subdirectory(yorg)

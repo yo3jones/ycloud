@@ -1,8 +1,11 @@
-#include "./server.h"
+#include "./service.h"
 #include "yutil.h"
 
 int main() {
-  yorg::Server server{yutil::Env::PROD};
-  server.start();
+  yutil::Env    env;
+  yorg::Service service{env};
+
+  service.start();
+
   return 0;
 }

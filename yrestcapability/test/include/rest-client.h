@@ -16,8 +16,12 @@ class RESTClient {
 
   crow::json::rvalue get(string path);
 
+  crow::json::rvalue post(string path, const crow::json::wvalue& value);
+
  private:
   const Env& env;
+
+  string buildURL(string path);
 };
 
 }  // namespace ymicroservice

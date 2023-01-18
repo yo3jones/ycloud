@@ -1,15 +1,16 @@
-#include "./tasks-controller.h"
 #include <ctime>
 #include <unordered_map>
 #include <vector>
+
+#include "./tasks-controller.h"
+#include "./yutil.h"
 #include "crow/json.h"
-#include "yutil.h"
 
 namespace yorg {
 namespace controllers {
 
-TasksController::TasksController(ConnAccessor& connAccessor)
-    : connAccessor{connAccessor} {}
+TasksController::TasksController(DBAccessor<MIDDLEWARE>& dbAccessor)
+    : dbAccessor(dbAccessor) {}
 
 crow::json::wvalue TasksController::post(const crow::request& req) {
   auto   body = crow::json::load(req.body);
@@ -17,7 +18,7 @@ crow::json::wvalue TasksController::post(const crow::request& req) {
   string id   = yutil::UUID().toString();
   string now  = yutil::DateTime().toISO();
 
-  pqxx::connection* conn = connAccessor.get(req);
+  pqxx::connection* conn = dbAccessor.conn(req);
   pqxx::work        txn{*conn};
 
   txn.exec_params(R"sql(
@@ -29,11 +30,16 @@ crow::json::wvalue TasksController::post(const crow::request& req) {
 
   txn.commit();
 
-  return {{"id", id}, {"name", name}, {"updated_at", now}, {"created_at", now}};
+  return {{"data", std::vector<crow::json::wvalue>{{{"id", id},
+                                                    {"name", name},
+                                                    {"updatedAt", now},
+                                                    {"createdAt", now}}}}};
+
+  return {{"id", id}, {"name", name}, {"updatedAt", now}, {"createdAt", now}};
 }
 
 crow::json::wvalue TasksController::get(const crow::request& req) {
-  pqxx::connection* conn = connAccessor.get(req);
+  pqxx::connection* conn = dbAccessor.conn(req);
   pqxx::work        txn{*conn};
 
   auto                            res = txn.exec("SELECT * FROM task");
@@ -43,8 +49,8 @@ crow::json::wvalue TasksController::get(const crow::request& req) {
     data.emplace_back(std::unordered_map<string, crow::json::wvalue>{
         {"id", row["id"].c_str()},
         {"name", row["name"].c_str()},
-        {"updated_at", yutil::DateTime(row["updated_at"].c_str()).toISO()},
-        {"created_at", yutil::DateTime(row["created_at"].c_str()).toISO()}});
+        {"updatedAt", yutil::DateTime(row["updated_at"].c_str()).toISO()},
+        {"createdAt", yutil::DateTime(row["created_at"].c_str()).toISO()}});
   }
 
   return {{"data", data}};
