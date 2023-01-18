@@ -5,8 +5,8 @@
 #include <iostream>
 #include <list>
 #include <mutex>
+#include <semaphore>
 #include <vector>
-#include "semaphore.h"
 
 namespace yutil {
 
@@ -30,7 +30,7 @@ class Pool {
   }
 
   T* get() {
-    semaphore.aquire();
+    semaphore.acquire();
 
     T* value;
 
@@ -48,15 +48,15 @@ class Pool {
   }
 
   void release(T* value) {
-    // const std::lock_guard<std::mutex> l(lock);
+    const std::lock_guard<std::mutex> l(lock);
     available.push_back(value);
-    // semaphore.release();
+    semaphore.release();
   }
 
   size_t availableCount() { return available.size(); }
 
  private:
-  Semaphore               semaphore;
+  std::binary_semaphore   semaphore;
   int                     maxValues;
   std::function<T*()>     factory;
   std::function<void(T*)> destroy;
