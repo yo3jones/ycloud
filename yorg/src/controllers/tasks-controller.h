@@ -1,22 +1,25 @@
 #ifndef YORG_SRC_CONTROLLERS_TASKS_CONTROLLER_H_
 #define YORG_SRC_CONTROLLERS_TASKS_CONTROLLER_H_
 #include <string>
-#include "../conn-accessor.h"
-#include "crow.h"
+#include "../middleware.h"
+#include "./crow.h"
+#include "./ydbrestcapability.h"
 
 namespace yorg {
 namespace controllers {
 
+using ymicroservice::DBAccessor;
+
 class TasksController {
  public:
-  TasksController(ConnAccessor& connAccessor);
+  explicit TasksController(DBAccessor<MIDDLEWARE>& dbAccessor);  // NOLINT
 
   crow::json::wvalue post(const crow::request& req);
 
   crow::json::wvalue get(const crow::request& req);
 
  private:
-  ConnAccessor& connAccessor;
+  DBAccessor<MIDDLEWARE>& dbAccessor;
 };
 
 }  // namespace controllers

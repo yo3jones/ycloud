@@ -16,7 +16,16 @@ using yutil::ROTypeMap;
 
 class DBCapability : public Capability {
  public:
-  explicit DBCapability(const Env& env);
+  template <typename... Args>
+  explicit DBCapability(const Env& env, Args... migrations)
+      : connInfo(env),
+        _connPool(connInfo, env.dbPoolSize()),
+        migrationsRunner(
+            connInfo,
+            ConnectionInfo(env, ConnectionInfo::USE_DEFAULT_DATABASE)) {
+    std::vector<Migration*> migrationsVector{migrations...};
+    migrationsRunner.registerMigrations(migrationsVector);
+  }
 
   ConnectionPool* connPool();
 

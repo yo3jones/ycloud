@@ -2,15 +2,6 @@
 
 namespace ymicroservice {
 
-using ydb::ConnectionInfo;
-
-DBCapability::DBCapability(const Env& env)
-    : connInfo(env),
-      _connPool(connInfo, env.dbPoolSize()),
-      migrationsRunner(
-          connInfo,
-          ConnectionInfo(env, ConnectionInfo::USE_DEFAULT_DATABASE)) {}
-
 ConnectionPool* DBCapability::connPool() {
   return &_connPool;
 }
