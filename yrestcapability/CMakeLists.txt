@@ -31,6 +31,16 @@ FetchContent_MakeAvailable(curlpp)
 
 add_library(yrestcapability
   src/rest-capability.cpp
+
+  src/validation/array-validator.cpp
+  src/validation/number-validator.cpp
+  src/validation/object-validator.cpp
+  src/validation/pattern-validator.cpp
+  src/validation/validation-constraint.cpp
+  src/validation/validation-entry.cpp
+  src/validation/validation-result.cpp
+  src/validation/validator.cpp
+  src/validation/validators.cpp
 )
 target_include_directories(yrestcapability
   PUBLIC include
@@ -59,6 +69,11 @@ add_executable(yrestcapability_test_test
   test/test-setup.cpp
 
   test/rest-capability_test.cpp
+
+  test/validation/array-validator_test.cpp
+  test/validation/number-validator_test.cpp
+  test/validation/object-validator_test.cpp
+  test/validation/validator_test.cpp
 )
 target_link_libraries(yrestcapability_test_test
   yrestcapability_test
