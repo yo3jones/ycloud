@@ -4,3 +4,10 @@
 #include "../src/ro-type-map.h"
 #include "../src/type-map.h"
 #include "../src/uuid.h"
+
+#include "../src/schema/array-schema.h"
+#include "../src/schema/constraint.h"
+#include "../src/schema/object-schema.h"
+#include "../src/schema/schema.h"
+#include "../src/schema/schemas.h"
+#include "../src/schema/value-type.h"
