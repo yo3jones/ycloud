@@ -6,7 +6,7 @@ namespace yutil {
 
 class ROTypeMap {
  public:
-  ROTypeMap(const TypeMap& backingMap);
+  explicit ROTypeMap(const TypeMap& backingMap);
 
   template <typename T>
   T* get() const {

@@ -10,6 +10,12 @@ add_library(yutil
   src/ro-type-map.cpp
   src/type-map.cpp
   src/uuid.cpp
+
+  src/schema/array-schema.cpp
+  src/schema/constraint.cpp
+  src/schema/object-schema.cpp
+  src/schema/schema.cpp
+  src/schema/schemas.cpp
 )
 target_include_directories(yutil
   PUBLIC include
@@ -21,6 +27,9 @@ add_executable(yutil_test
   test/pool_test.cpp
   test/type-map_test.cpp
   test/uuid_test.cpp
+
+  test/schema/object-schema_test.cpp
+  test/schema/schema_test.cpp
 )
 target_link_libraries(yutil_test
   yutil
